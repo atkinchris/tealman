@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Tealman</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Mustafa Temel">
+    <meta name="description" content="Extends Chrome DevTools to capture data sent to Tealium IQ.">
+    <meta name="keywords" content="tealium">
+    <link rel="stylesheet" href="tealman-panel.css">
+  </head>
+  <body>
+    <div class="wrapper">
+      <nav>
+        <div class="tab-switcher">
+          <a href="#" data-tab="tab-ga">Google Analytics</a>
+          <a href="#" data-tab="tab-tealium" class="active">Tealium</a>
+        </div>
+        <div class="tab-controls">
+          <a href="#" class="clear-requests">Clear</a>
+        </div>
+      </nav>
+      <div class="tab tab-ga hidden">
+        <div class="left">
+          <h1>Google Analytics requests</h1>
+          <div class="request-list"></div>
+        </div>
+        <div class="right">
+          <h1>@placeholder</h1>
+          <div class="post-data"></div>
+        </div>
+      </div>
+      <div class="tab tab-tealium">
+        <div class="left">
+          <h1>Tealium requests</h1>
+          <div class="request-list"></div>
+        </div>
+        <div class="right">
+          <h1>@placeholder</h1>
+          <div class="post-data"></div>
+        </div>
+      </div>
+    </div>
+    <script src="tealman-panel.js"></script>
+  </body>
+</html>
