@@ -122,6 +122,9 @@
       scope.tealiumTab.show()
     })
 
+    /**
+     * Handles clearing of all requests.
+     */
     scope.clearRequests.addEventListener('click', (event) => {
       event.preventDefault()
       scope.gaTab.init()
@@ -129,15 +132,24 @@
     })
 
     /**
-     * @param {array} queryString
+     * @param {object} req
      * @return {object}
-     * Converts given Google Analytics payload (originally an array of name-value pair objects) into a flat object.
+     * Extracts Google Analytics payload from given network request.
      */
-    scope.getGaPostData = (queryString) => {
+    scope.getGaPostData = (req) => {
       const gaPostData = {}
-      queryString.forEach((cur) => {
-        gaPostData[`${gl.decodeURIComponent(cur.name)}`] = gl.decodeURIComponent(cur.value)
-      })
+      const method = req.method.toLowerCase()
+      if (method === 'get') {
+        req.queryString.forEach((cur) => {
+          gaPostData[`${gl.decodeURIComponent(cur.name)}`] = gl.decodeURIComponent(cur.value)
+        })
+      } else if (method === 'post') {
+         const tmp = req.postData.text.split('&')
+         tmp.forEach((cur) => {
+           cur = cur.split('=')
+           gaPostData[`${gl.decodeURIComponent(cur[0])}`] = `${gl.decodeURIComponent(cur[1])}`
+         })
+      }
       return gaPostData
     }
     
@@ -161,7 +173,7 @@
       if (req && req.request) {
         const isTealiumRequest = /tealiumiq\.com(.*)\/i\.gif/.test(req.request.url) && req.request.postData
           && req.request.postData.text
-        const isGaRequest = /google\-analytics\.com\/collect\/?\?/.test(req.request.url) && req.request.queryString
+        const isGaRequest = /google\-analytics\.com\/(r\/)?collect/.test(req.request.url) && req.request.queryString
         if (isTealiumRequest) {
           scope.tealiumTab.requestList.push({
             'data': scope.getTealiumPostData(req.request.postData.text)
@@ -169,7 +181,7 @@
           scope.tealiumTab.render()
         } else if (isGaRequest) {
           scope.gaTab.requestList.push({
-            'data': scope.getGaPostData(req.request.queryString)
+            'data': scope.getGaPostData(req.request)
           })
           scope.gaTab.render()
         }
