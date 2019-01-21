@@ -72,13 +72,28 @@
       }
 
       /**
+       * @param {number} requestIndex
+       * @return {boolean}
+       * Checks if the request at given index is a page view.
+       */
+      isPageView (requestIndex) {
+        let result = false
+        const data = this.requestList[requestIndex].data
+        if (data.t === 'pageview' || data.tealium_event === 'view') {
+          result = true
+        }
+        return result
+      }
+
+      /**
        * Creates a unique link for displaying the newly captured request payload.
        */
       render () {
         this.requestList.forEach((cur, index) => {
           if (!this.container.querySelector(`.request a[data-index="${index}"]`)) {
             const newRequest = doc.createElement('div')
-            newRequest.setAttribute('class', 'request')
+            const isPageView = this.isPageView(index)
+            newRequest.setAttribute('class', `request${isPageView ? ' pageview' : ''}`)
             newRequest.innerHTML = `<a href="#" data-index="${index}">Request ${index + 1}</a>`
             newRequest.querySelector('a').addEventListener('click', (event) => {
               event.preventDefault()
