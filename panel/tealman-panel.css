@@ -100,6 +100,12 @@ nav {
   text-decoration: underline;
 }
 
+.left .request.pageview a::before {
+  color: #06183d;
+  content: "🅿️";
+  margin-right: 4px;
+}
+
 /* Tab right */
 
 .right {
