@@ -16,6 +16,7 @@
         this.requestListWrapper = doc.querySelector(`${selector} .request-list`)
         this.postDataHeading = doc.querySelector(`${selector} .right h1`)
         this.postDataWrapper = doc.querySelector(`${selector} .post-data`)
+        this.tealiumProfileEnvironment = doc.querySelector('.tealium-profile-environment')
         this.init()
       }
 
@@ -27,6 +28,9 @@
         this.requestListWrapper.innerHTML = ''
         this.postDataHeading.innerHTML = ''
         this.postDataWrapper.innerHTML = ''
+        if (this.tealiumProfileEnvironment) {
+          this.tealiumProfileEnvironment.innerHTML = ''
+        }
       }
 
       /**
@@ -86,6 +90,21 @@
       }
 
       /**
+       * @param {number} requestIndex
+       * @return {string}
+       * @todo Add description
+       */
+      getTealiumProfileEnvironment (requestIndex) {
+        let result = ''
+        const data = this.requestList[requestIndex].data
+        if (typeof data.tealium_profile === 'string' && data.tealium_profile.length > 0
+          && typeof data.tealium_environment === 'string' && data.tealium_environment.length > 0) {
+          result = `${data.tealium_profile} / ${data.tealium_environment}`
+        }
+        return result
+      }
+
+      /**
        * Creates a unique link for displaying the newly captured request payload.
        */
       render () {
@@ -102,6 +121,10 @@
               event.target.classList.add('active')
             })
             this.requestListWrapper.appendChild(newRequest)
+            const tealProEnv = this.getTealiumProfileEnvironment(index)
+            if (this.tealiumProfileEnvironment && tealProEnv) {
+              this.tealiumProfileEnvironment.innerHTML = tealProEnv
+            }
           }
         })
       }
