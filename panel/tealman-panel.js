@@ -55,6 +55,24 @@
        */
       showPostData (requestIndex) {
         this.postDataHeading.innerHTML = `Request ${requestIndex + 1} post data`
+        const isPageView = this.isPageView(requestIndex)
+        if (!isPageView) {
+          const ec = this.getEventCategory(requestIndex)
+          const ea = this.getEventAction(requestIndex)
+          const el = this.getEventLabel(requestIndex)
+          this.postDataHeading.innerHTML += `
+            <div class="heading-event-signature">
+              <div class="heading-event-category">
+                <span>Category</span>: ${ec}
+              </div>
+              <div class="heading-event-action">
+                <span>Action</span>: ${ea}
+              </div>
+              <div class="heading-event-label">
+                <span>Label</span>: ${el}
+              </div>
+            </div>`
+        }
         this.postDataWrapper.innerHTML = `${gl.Object.keys(this.requestList[requestIndex].data).reduce((acc, cur) => {
           let value = ''
           const tmp = this.requestList[requestIndex].data[cur]
@@ -85,6 +103,54 @@
         const data = this.requestList[requestIndex].data
         if (data.t === 'pageview' || data.tealium_event === 'view') {
           result = true
+        }
+        return result
+      }
+
+      /**
+       * @param {number} requestIndex
+       * @return {string}
+       * @todo Add description
+       */
+      getEventCategory (requestIndex) {
+        let result = ''
+        const data = this.requestList[requestIndex].data
+        if (data.ec) {
+          result = data.ec
+        } else if (data.eventCategory) {
+          result = data.eventCategory
+        }
+        return result
+      }
+
+      /**
+       * @param {number} requestIndex
+       * @return {string}
+       * @todo Add description
+       */
+      getEventAction (requestIndex) {
+        let result = ''
+        const data = this.requestList[requestIndex].data
+        if (data.ea) {
+          result = data.ea
+        } else if (data.eventAction) {
+          result = data.eventAction
+        }
+        return result
+      }
+
+      /**
+       * @param {number} requestIndex
+       * @return {string}
+       * @todo Add description
+       */
+      getEventLabel (requestIndex) {
+        let result = ''
+        const data = this.requestList[requestIndex].data
+        if (data.el) {
+          result = data.el
+        } else if (data.eventLabel) {
+          result = data.eventLabel
         }
         return result
       }
