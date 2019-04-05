@@ -56,6 +56,16 @@ nav {
   background-color: #f3f3f4;
 }
 
+.tab-controls .preserve-log-wrapper {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.tab-controls #preserve-log,
+.tab-controls label[for="preserve-log"] {
+  cursor: pointer;
+}
+
 /* Tab */
 
 .tab {

@@ -131,11 +131,13 @@
     }
 
     const scope = {
-      'gaTab': new Tab('.tab-ga'),
-      'gaTabSwicther': doc.querySelector('.tab-switcher a[data-tab*="tab-ga"]'),
-      'tealiumTab': new Tab('.tab-tealium'),
-      'tealiumTabSwicther': doc.querySelector('.tab-switcher a[data-tab*="tab-tealium"]'),
-      'clearRequests': doc.querySelector('.clear-requests')
+      gaTab: new Tab('.tab-ga'),
+      gaTabSwicther: doc.querySelector('.tab-switcher a[data-tab*="tab-ga"]'),
+      tealiumTab: new Tab('.tab-tealium'),
+      tealiumTabSwicther: doc.querySelector('.tab-switcher a[data-tab*="tab-tealium"]'),
+      clearRequests: doc.querySelector('.clear-requests'),
+      preserveLogFlag: false,
+      preserveLogCheckbox: doc.querySelector('#preserve-log')
     }
 
     /**
@@ -158,6 +160,13 @@
       scope.gaTab.hide()
       scope.tealiumTabSwicther.classList.add('active')
       scope.tealiumTab.show()
+    })
+
+    /**
+     * Handles preserving/not-preserving of logs.
+     */
+    scope.preserveLogCheckbox.addEventListener('change', (event) => {
+      scope.preserveLogFlag = !scope.preserveLogFlag
     })
 
     /**
@@ -228,8 +237,10 @@
 
     chrome.devtools.network.onRequestFinished.addListener(scope.listen)
     chrome.devtools.network.onNavigated.addListener(() => {
-      scope.gaTab.init()
-      scope.tealiumTab.init()
+      if (!scope.preserveLogFlag) {
+        scope.gaTab.init()
+        scope.tealiumTab.init()
+      }
     })
 
     gl.tealman = scope
