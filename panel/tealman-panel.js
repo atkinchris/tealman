@@ -185,6 +185,7 @@
               this.showPostData(gl.parseInt(event.target.dataset.index))
               this.container.querySelectorAll('.request a.active').forEach((cur) => cur.classList.remove('active'))
               event.target.classList.add('active')
+              scope.highlightKeyword()
             })
             this.requestListWrapper.appendChild(newRequest)
             const tealProEnv = this.getTealiumProfileEnvironment(index)
@@ -203,7 +204,20 @@
       tealiumTabSwicther: doc.querySelector('.tab-switcher a[data-tab*="tab-tealium"]'),
       clearRequests: doc.querySelector('.clear-requests'),
       preserveLogFlag: false,
-      preserveLogCheckbox: doc.querySelector('#preserve-log')
+      preserveLogCheckbox: doc.querySelector('#preserve-log'),
+      keywordInput: doc.querySelector('#keyword'),
+      highlighterContextSelector: '.right .post-data'
+    }
+    scope.highlighterContext = doc.querySelectorAll(scope.highlighterContextSelector)
+    scope.highlighter = new Mark(scope.highlighterContext)
+
+    scope.highlightKeyword = function () {
+      var keyword = scope.keywordInput.value
+      scope.highlighter.unmark({
+        done: function () {
+          scope.highlighter.mark(keyword)
+        }
+      })
     }
 
     /**
@@ -227,6 +241,8 @@
       scope.tealiumTabSwicther.classList.add('active')
       scope.tealiumTab.show()
     })
+
+    scope.keywordInput.addEventListener('keyup', scope.highlightKeyword)
 
     /**
      * Handles preserving/not-preserving of logs.

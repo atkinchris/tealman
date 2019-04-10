@@ -8,6 +8,7 @@
     <meta name="description" content="Extends Chrome DevTools to capture data sent to Google Analytics and Tealium IQ.">
     <meta name="keywords" content="tealium">
     <link rel="stylesheet" href="tealman-panel.css">
+    <script src="mark.min.js"></script>
   </head>
   <body>
     <div class="wrapper">
@@ -17,11 +18,16 @@
           <a href="#" data-tab="tab-tealium" class="active">Tealium</a>
         </div>
         <div class="tab-controls">
-          <div class="preserve-log-wrapper">
+          <div class="tab-ctrl tab-ctrl-preserve-log">
             <input type="checkbox" id="preserve-log" name="preserve-log">
             <label for="preserve-log">Preserve log</label>
           </div>
-          <a href="#" class="clear-requests">Clear</a>
+          <div class="tab-ctrl tab-ctrl-keyword">
+            <input type="text" id="keyword" name="keyword" placeholder="Find string in post data">
+          </div>
+          <div class="tab-ctrl tab-ctrl-clear-requests">
+            <a href="#" class="clear-requests">Clear</a>
+          </div>
         </div>
       </nav>
       <div class="tab tab-ga hidden">
