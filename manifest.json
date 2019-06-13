@@ -1,5 +1,5 @@
 {
-  "description": "Extends Chrome DevTools to capture data sent to Google Analytics and Tealium IQ.",
+  "description": "Extends Chrome DevTools to capture data sent to Google Analytics and Tealium iQ.",
   "devtools_page": "devtoolspage.html",
   "icons": {
     "128": "icon-128.png"
@@ -9,5 +9,8 @@
   "permissions": [
     "tabs"
   ],
-  "version": "1.4"
+  "version": "1.5",
+  "browser_action": {
+    "default_icon": "icon-128.png"
+  }
 }
