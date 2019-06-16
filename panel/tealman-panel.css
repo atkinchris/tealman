@@ -76,6 +76,16 @@ nav {
   padding: 5px;
 }
 
+/* Author contribution */
+
+.author-contribution {
+  font-size: xx-small;
+}
+
+.author-contribution a {
+  color: #222;
+}
+
 /* Tab */
 
 .tab {
@@ -152,7 +162,6 @@ nav {
 .right .heading-event-category,
 .right .heading-event-action,
 .right .heading-event-label {
-  border-right: 1px solid #222;
   flex: 1
 }
 
