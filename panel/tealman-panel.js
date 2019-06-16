@@ -8,6 +8,7 @@
     class Tab {
       /**
        * @param {string} selector
+       * Constructor.
        */
       constructor (selector) {
         this.selector = selector
@@ -73,7 +74,7 @@
               </div>
             </div>`
         }
-        this.postDataWrapper.innerHTML = `${gl.Object.keys(this.requestList[requestIndex].data).reduce((acc, cur) => {
+        this.postDataWrapper.innerHTML = `${Object.keys(this.requestList[requestIndex].data).reduce((acc, cur) => {
           let value = ''
           const tmp = this.requestList[requestIndex].data[cur]
           if (tmp === null) {
@@ -83,7 +84,7 @@
           } else if (/boolean|number|string/.test(typeof tmp)) {
             value = `${tmp}`
           } else if (typeof tmp === 'object') {
-            value = gl.JSON.stringify(tmp)
+            value = JSON.stringify(tmp)
           }
           return acc + `
             <div class="post-data-r">
@@ -110,7 +111,10 @@
       /**
        * @param {number} requestIndex
        * @return {string}
-       * @todo Add description
+       * Extracts event category from given network request.
+       * For Google analytics requests, {data.ec} should consistently work.
+       * For Tealium requests, {data.eventCategory} will only work if the event category data layer variable is named 
+       * {eventCategory} in Tealium.
        */
       getEventCategory (requestIndex) {
         let result = ''
@@ -126,7 +130,10 @@
       /**
        * @param {number} requestIndex
        * @return {string}
-       * @todo Add description
+       * Extracts event action from given network request.
+       * For Google analytics requests, {data.ea} should consistently work.
+       * For Tealium requests, {data.eventAction} will only work if the event action data layer variable is named 
+       * {eventAction} in Tealium.
        */
       getEventAction (requestIndex) {
         let result = ''
@@ -142,7 +149,10 @@
       /**
        * @param {number} requestIndex
        * @return {string}
-       * @todo Add description
+       * Extracts event label from given network request.
+       * For Google analytics requests, {data.el} should consistently work.
+       * For Tealium requests, {data.eventLabel} will only work if the event label data layer variable is named 
+       * {eventLabel} in Tealium.
        */
       getEventLabel (requestIndex) {
         let result = ''
@@ -158,7 +168,7 @@
       /**
        * @param {number} requestIndex
        * @return {string}
-       * @todo Add description
+       * Extracts Tealium publish profile and environment from given network request.
        */
       getTealiumProfileEnvironment (requestIndex) {
         let result = ''
@@ -180,10 +190,10 @@
             const isPageView = this.isPageView(index)
             newRequest.setAttribute('class', `request${isPageView ? ' pageview' : ''}`)
             newRequest.innerHTML = `<a href="#" data-index="${index}">Request ${index + 1}</a>`
-            newRequest.querySelector('a').addEventListener('click', (event) => {
+            newRequest.querySelector('a').addEventListener('click', event => {
               event.preventDefault()
-              this.showPostData(gl.parseInt(event.target.dataset.index))
-              this.container.querySelectorAll('.request a.active').forEach((cur) => cur.classList.remove('active'))
+              this.showPostData(parseInt(event.target.dataset.index))
+              this.container.querySelectorAll('.request a.active').forEach(cur => cur.classList.remove('active'))
               event.target.classList.add('active')
               scope.highlightKeyword()
             })
@@ -202,28 +212,19 @@
       gaTabSwicther: doc.querySelector('.tab-switcher a[data-tab*="tab-ga"]'),
       tealiumTab: new Tab('.tab-tealium'),
       tealiumTabSwicther: doc.querySelector('.tab-switcher a[data-tab*="tab-tealium"]'),
-      clearRequests: doc.querySelector('.clear-requests'),
       preserveLogFlag: false,
       preserveLogCheckbox: doc.querySelector('#preserve-log'),
+      clearRequests: doc.querySelector('.clear-requests'),
       keywordInput: doc.querySelector('#keyword'),
       highlighterContextSelector: '.right .post-data'
     }
     scope.highlighterContext = doc.querySelectorAll(scope.highlighterContextSelector)
     scope.highlighter = new Mark(scope.highlighterContext)
 
-    scope.highlightKeyword = function () {
-      var keyword = scope.keywordInput.value
-      scope.highlighter.unmark({
-        done: function () {
-          scope.highlighter.mark(keyword)
-        }
-      })
-    }
-
     /**
      * Handles switching to the Google Analytics tab.
      */
-    scope.gaTabSwicther.addEventListener('click', (event) => {
+    scope.gaTabSwicther.addEventListener('click', event => {
       event.preventDefault()
       scope.tealiumTabSwicther.classList.remove('active')
       scope.tealiumTab.hide()
@@ -234,7 +235,7 @@
     /**
      * Handles switching to the Tealium tab.
      */
-    scope.tealiumTabSwicther.addEventListener('click', (event) => {
+    scope.tealiumTabSwicther.addEventListener('click', event => {
       event.preventDefault()
       scope.gaTabSwicther.classList.remove('active')
       scope.gaTab.hide()
@@ -242,19 +243,35 @@
       scope.tealiumTab.show()
     })
 
+    /**
+     * Highlights all post data strings that match the searched keyword.
+     */
+    scope.highlightKeyword = function () {
+      var keyword = scope.keywordInput.value
+      scope.highlighter.unmark({
+        done: function () {
+          scope.highlighter.mark(keyword)
+        }
+      })
+    }
+
+    /**
+     * Handles highlighting of all post data strings that match the searched keyword.
+     */
     scope.keywordInput.addEventListener('keyup', scope.highlightKeyword)
 
     /**
      * Handles preserving/not-preserving of logs.
      */
-    scope.preserveLogCheckbox.addEventListener('change', (event) => {
+    scope.preserveLogCheckbox.addEventListener('change', event => {
+      event.preventDefault()
       scope.preserveLogFlag = !scope.preserveLogFlag
     })
 
     /**
      * Handles clearing of all requests.
      */
-    scope.clearRequests.addEventListener('click', (event) => {
+    scope.clearRequests.addEventListener('click', event => {
       event.preventDefault()
       scope.gaTab.init()
       scope.tealiumTab.init()
@@ -265,18 +282,18 @@
      * @return {object}
      * Extracts Google Analytics payload from given network request.
      */
-    scope.getGaPostData = (req) => {
+    scope.getGaPostData = req => {
       const gaPostData = {}
       const method = req.method.toLowerCase()
       if (method === 'get') {
-        req.queryString.forEach((cur) => {
-          gaPostData[`${gl.decodeURIComponent(cur.name)}`] = gl.decodeURIComponent(cur.value)
+        req.queryString.forEach(cur => {
+          gaPostData[`${decodeURIComponent(cur.name)}`] = decodeURIComponent(cur.value)
         })
       } else if (method === 'post') {
          const tmp = req.postData.text.split('&')
-         tmp.forEach((cur) => {
+         tmp.forEach(cur => {
            cur = cur.split('=')
-           gaPostData[`${gl.decodeURIComponent(cur[0])}`] = `${gl.decodeURIComponent(cur[1])}`
+           gaPostData[`${decodeURIComponent(cur[0])}`] = `${decodeURIComponent(cur[1])}`
          })
       }
       return gaPostData
@@ -287,10 +304,10 @@
      * @return {object}
      * Parses given Tealium payload (originally a stringified JSON object) into JSON.
      */
-    scope.getTealiumPostData = (text) => {
+    scope.getTealiumPostData = text => {
       const begin = text.indexOf('{')
       const end = text.lastIndexOf('}') + 1
-      const postData = gl.JSON.parse(text.substring(begin, end))
+      const postData = JSON.parse(text.substring(begin, end))
       return postData.data
     }
 
@@ -298,19 +315,19 @@
      * @param {object} req
      * Observes network activity to capture Google Analytics and Tealium requests.
      */
-    scope.listen = (req) => {
+    scope.listen = req => {
       if (req && req.request) {
         const isTealiumRequest = /tealiumiq\.com(.*)\/i\.gif/.test(req.request.url) && req.request.postData
           && req.request.postData.text
         const isGaRequest = /google\-analytics\.com\/(r\/)?collect/.test(req.request.url) && req.request.queryString
         if (isTealiumRequest) {
           scope.tealiumTab.requestList.push({
-            'data': scope.getTealiumPostData(req.request.postData.text)
+            data: scope.getTealiumPostData(req.request.postData.text)
           })
           scope.tealiumTab.render()
         } else if (isGaRequest) {
           scope.gaTab.requestList.push({
-            'data': scope.getGaPostData(req.request)
+            data: scope.getGaPostData(req.request)
           })
           scope.gaTab.render()
         }
@@ -328,10 +345,8 @@
     gl.tealman = scope
 
     return true
-  } catch (exception) {
-    if (gl && gl.console && typeof gl.console.error === 'function') {
-      gl.console.error(exception)
-    }
+  } catch (error) {
+    console.error(error)
     return false
   }
 })(window, window.document)
