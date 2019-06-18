@@ -8,7 +8,6 @@
     class Tab {
       /**
        * @param {string} selector
-       * Constructor.
        */
       constructor (selector) {
         this.selector = selector
@@ -50,9 +49,8 @@
 
       /**
        * @param {number} requestIndex
-       * @todo Review
        * @todo Heading can be improved. For example, a combination of unique index + event category + event action.
-       * @todo div.post-data is redrawn every time a request link is clicked. This is an inefficiency concern.
+       * @todo div.post-data is redrawn every time a request link is clicked. This is an efficiency concern.
        */
       showPostData (requestIndex) {
         this.postDataHeading.innerHTML = `Request ${requestIndex + 1} post data`
@@ -61,18 +59,20 @@
           const ec = this.getEventCategory(requestIndex)
           const ea = this.getEventAction(requestIndex)
           const el = this.getEventLabel(requestIndex)
-          this.postDataHeading.innerHTML += `
-            <div class="heading-event-signature">
-              <div class="heading-event-category">
-                <span>Category</span>: ${ec}
-              </div>
-              <div class="heading-event-action">
-                <span>Action</span>: ${ea}
-              </div>
-              <div class="heading-event-label">
-                <span>Label</span>: ${el}
-              </div>
-            </div>`
+          if (ec || ea || el) {
+            this.postDataHeading.innerHTML += `
+              <div class="heading-event-signature">
+                <div class="heading-event-category">
+                  <span>Category</span>: ${ec}
+                </div>
+                <div class="heading-event-action">
+                  <span>Action</span>: ${ea}
+                </div>
+                <div class="heading-event-label">
+                  <span>Label</span>: ${el}
+                </div>
+              </div>`
+          }
         }
         this.postDataWrapper.innerHTML = `${Object.keys(this.requestList[requestIndex].data).reduce((acc, cur) => {
           let value = ''
@@ -86,6 +86,17 @@
           } else if (typeof tmp === 'object') {
             value = JSON.stringify(tmp)
           }
+          if (/^cp\./i.test(cur)) {
+            cur = cur.replace(/^cp\./i, '<span class="color-cookie">cp.</span>')
+          } else if (/^dom\./i.test(cur)) {
+            cur = cur.replace(/^dom\./i, '<span class="color-dom">dom.</span>')
+          } else if (/^js_page\./i.test(cur)) {
+            cur = cur.replace(/^js_page\./i, '<span class="color-javascript">js_page.</span>')
+          } else if (/^meta\./i.test(cur)) {
+            cur = cur.replace(/^meta\./i, '<span class="color-meta">meta.</span>')
+          } else if (/^qp\./i.test(cur)) {
+            cur = cur.replace(/^qp\./i, '<span class="color-querystring">qp.</span>')
+          }
           return acc + `
             <div class="post-data-r">
               <div class="post-data-r-varname">${cur}</div>
@@ -96,86 +107,73 @@
 
       /**
        * @param {number} requestIndex
+       * @param {string} name
+       * @return {string|null}
+       * Extracts the data variable with the specified name from the request at the given index.
+       */
+      getDataVariable (requestIndex, name) {
+        let value = null
+        const data = this.requestList[requestIndex].data
+        if (data[name]) {
+          value = data[name]
+        }
+        return value
+      }
+
+      /**
+       * @param {number} requestIndex
        * @return {boolean}
-       * Checks if the request at given index is a page view.
+       * Checks if the request at the given index is a page view.
        */
       isPageView (requestIndex) {
-        let result = false
-        const data = this.requestList[requestIndex].data
-        if (data.t === 'pageview' || data.tealium_event === 'view') {
-          result = true
-        }
-        return result
+        return (this.getDataVariable(requestIndex, 't') === 'pageview'
+          || this.getDataVariable(requestIndex, 'tealium_event') === 'view')
       }
 
       /**
        * @param {number} requestIndex
        * @return {string}
-       * Extracts event category from given network request.
-       * For Google analytics requests, {data.ec} should consistently work.
-       * For Tealium requests, {data.eventCategory} will only work if the event category data layer variable is named 
-       * {eventCategory} in Tealium.
+       * Extracts event category from the request at the given index.
+       * For Google analytics requests, {ec} variable should consistently work.
+       * For Tealium requests, a data layer variable named {eventCategory} must exist within TiQ.
        */
       getEventCategory (requestIndex) {
-        let result = ''
-        const data = this.requestList[requestIndex].data
-        if (data.ec) {
-          result = data.ec
-        } else if (data.eventCategory) {
-          result = data.eventCategory
-        }
-        return result
+        return (this.getDataVariable(requestIndex, 'ec') || this.getDataVariable(requestIndex, 'eventCategory') || '')
       }
 
       /**
        * @param {number} requestIndex
        * @return {string}
-       * Extracts event action from given network request.
-       * For Google analytics requests, {data.ea} should consistently work.
-       * For Tealium requests, {data.eventAction} will only work if the event action data layer variable is named 
-       * {eventAction} in Tealium.
+       * Extracts event action from the request at the given index.
+       * For Google analytics requests, {ea} variable should consistently work.
+       * For Tealium requests, a data layer variable named {eventAction} must exist within TiQ.
        */
       getEventAction (requestIndex) {
-        let result = ''
-        const data = this.requestList[requestIndex].data
-        if (data.ea) {
-          result = data.ea
-        } else if (data.eventAction) {
-          result = data.eventAction
-        }
-        return result
+        return (this.getDataVariable(requestIndex, 'ea') || this.getDataVariable(requestIndex, 'eventAction') || '')
       }
 
       /**
        * @param {number} requestIndex
        * @return {string}
-       * Extracts event label from given network request.
-       * For Google analytics requests, {data.el} should consistently work.
-       * For Tealium requests, {data.eventLabel} will only work if the event label data layer variable is named 
-       * {eventLabel} in Tealium.
+       * Extracts event label from the request at the given index.
+       * For Google analytics requests, {el} variable should consistently work.
+       * For Tealium requests, a data layer variabled named {eventLabel} must exist within TiQ.
        */
       getEventLabel (requestIndex) {
-        let result = ''
-        const data = this.requestList[requestIndex].data
-        if (data.el) {
-          result = data.el
-        } else if (data.eventLabel) {
-          result = data.eventLabel
-        }
-        return result
+        return (this.getDataVariable(requestIndex, 'el') || this.getDataVariable(requestIndex, 'eventLabel') || '')
       }
 
       /**
        * @param {number} requestIndex
        * @return {string}
-       * Extracts Tealium publish profile and environment from given network request.
+       * Extracts Tealium profile and publish environment from the request at given index.
        */
       getTealiumProfileEnvironment (requestIndex) {
         let result = ''
-        const data = this.requestList[requestIndex].data
-        if (typeof data.tealium_profile === 'string' && data.tealium_profile.length > 0
-          && typeof data.tealium_environment === 'string' && data.tealium_environment.length > 0) {
-          result = `${data.tealium_profile} / ${data.tealium_environment}`
+        const profile = this.getDataVariable(requestIndex, 'tealium_profile')
+        const environment = this.getDataVariable(requestIndex, 'tealium_environment')
+        if (profile && environment) {
+          result = `${profile} / ${environment}`
         }
         return result
       }
