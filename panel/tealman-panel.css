@@ -205,3 +205,23 @@ mark {
   color: #fff;
   font-weight: bold;
 }
+
+.color-cookie {
+  color: #e7674b;
+}
+
+.color-dom {
+  color: #915130;
+}
+
+.color-javascript {
+  color: #2976ac;
+}
+
+.color-meta {
+  color: #70bfda;
+}
+
+.color-querystring {
+  color: #979749;
+}

@@ -1,1 +1,1 @@
-[Tealman](https://optimisation.eurostar.com/assets/musti/tealman/tealman.zip)
+[Tealman](https://chrome.google.com/webstore/detail/tealman/kbppiimbnpoalogphgccdikkjhjolmfn)
