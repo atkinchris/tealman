@@ -14,8 +14,8 @@
     <div class="wrapper">
       <nav>
         <div class="tab-switcher">
-          <a href="#" data-tab="tab-ga">Google Analytics</a>
-          <a href="#" data-tab="tab-tealium" class="active">Tealium</a>
+          <a href="#" data-tab="tab-ga" title="Debug Google Analytics /collect requests">Google Analytics</a>
+          <a href="#" data-tab="tab-tealium" title="Debug Tealium /collect requests" class="active">Tealium</a>
         </div>
         <div class="tab-controls">
           <div class="tab-ctrl tab-ctrl-preserve-log">
@@ -24,17 +24,14 @@
           </div>
           <div class="tab-ctrl tab-ctrl-keyword">
             <input type="text" id="keyword" name="keyword" placeholder="Find string in post data">
+            <a href="#" class="jump-to-keyword-match jump-to-keyword-match-prev" title="Jump to previous match">&#8592;</a>
+            <a href="#" class="jump-to-keyword-match jump-to-keyword-match-next" title="Jump to next match">&#8594;</a>
           </div>
           <div class="tab-ctrl tab-ctrl-clear-requests">
-            <a href="#" class="clear-requests" title="Clear all requests">Clear</a>
+            <a href="#" class="clear-requests" title="Clear all /collect requests">Clear</a>
           </div>
         </div>
       </nav>
-      <p class='author-contribution'>
-        <a href="https://www.flaticon.com/free-icon/kitty_763709" target="_blank">Icon</a> made by&#160;
-        <a href="https://www.freepik.com/home" target="_blank">Freepik</a> from&#160;
-        <a href="http://www.flaticon.com">www.flaticon.com</a>
-      </p>
       <div class="tab tab-ga hidden">
         <div class="left">
           <h1>Google Analytics requests</h1>
@@ -55,6 +52,11 @@
           <div class="post-data"></div>
         </div>
       </div>
+      <p class='author-contribution'>
+        <a href="https://www.flaticon.com/free-icon/kitty_763709" target="_blank">Icon</a> made by&#160;
+        <a href="https://www.freepik.com/home" target="_blank">Freepik</a> from&#160;
+        <a href="https://www.flaticon.com/" target="_blank">www.flaticon.com</a>
+      </p>
     </div>
     <script src="tealman-panel.js"></script>
   </body>

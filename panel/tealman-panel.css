@@ -14,7 +14,14 @@ body {
 /* Nav */
 
 nav {
+  background-color: #4a154b;
+  color: #fff;
   display: flex;
+  left: 0;
+  padding: 8px;
+  position: fixed;
+  right: 0;
+  top: 0;
 }
 
 .tab-switcher {
@@ -76,20 +83,19 @@ nav {
   padding: 5px;
 }
 
-/* Author contribution */
-
-.author-contribution {
-  font-size: xx-small;
+#keyword:focus {
+  outline-color: #fbdd0f;
 }
 
-.author-contribution a {
-  color: #222;
+.tab-controls .jump-to-keyword-match {
+  padding: 6px;
 }
 
 /* Tab */
 
 .tab {
   display: flex;
+  margin-top: 38px;
 }
 
 .tab.hidden {
@@ -206,6 +212,11 @@ mark {
   font-weight: bold;
 }
 
+mark.current {
+  background-color: #fbdd0f;
+  color: #222;
+}
+
 .color-cookie {
   color: #e7674b;
 }
@@ -224,4 +235,17 @@ mark {
 
 .color-querystring {
   color: #979749;
+}
+
+/* Author contribution */
+
+.author-contribution {
+  font-size: xx-small;
+  margin-top: 0;
+  opacity: 0.5;
+  text-align: right;
+}
+
+.author-contribution a {
+  color: #222;
 }

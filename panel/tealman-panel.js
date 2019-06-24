@@ -74,32 +74,38 @@
               </div>`
           }
         }
-        this.postDataWrapper.innerHTML = `${Object.keys(this.requestList[requestIndex].data).reduce((acc, cur) => {
-          let value = ''
-          const tmp = this.requestList[requestIndex].data[cur]
-          if (tmp === null) {
+        const requestDataUnordered = this.requestList[requestIndex].data
+        const requestDataOrdered = []
+        Object.keys(requestDataUnordered).sort().forEach(name => requestDataOrdered.push({
+          name,
+          value: requestDataUnordered[name]
+        }))
+        this.postDataWrapper.innerHTML = `${requestDataOrdered.reduce((acc, cur) => {
+          let name = cur.name
+          let value = cur.value
+          if (value === null) {
             value = 'null'
-          } else if (typeof tmp === 'undefined') {
+          } else if (typeof value === 'undefined') {
             value = 'undefined'
-          } else if (/boolean|number|string/.test(typeof tmp)) {
-            value = `${tmp}`
-          } else if (typeof tmp === 'object') {
-            value = JSON.stringify(tmp)
+          } else if (/boolean|number|string/.test(typeof value)) {
+            value = `${value}`
+          } else if (typeof value === 'object') {
+            value = JSON.stringify(value)
           }
-          if (/^cp\./i.test(cur)) {
-            cur = cur.replace(/^cp\./i, '<span class="color-cookie">cp.</span>')
-          } else if (/^dom\./i.test(cur)) {
-            cur = cur.replace(/^dom\./i, '<span class="color-dom">dom.</span>')
-          } else if (/^js_page\./i.test(cur)) {
-            cur = cur.replace(/^js_page\./i, '<span class="color-javascript">js_page.</span>')
-          } else if (/^meta\./i.test(cur)) {
-            cur = cur.replace(/^meta\./i, '<span class="color-meta">meta.</span>')
-          } else if (/^qp\./i.test(cur)) {
-            cur = cur.replace(/^qp\./i, '<span class="color-querystring">qp.</span>')
+          if (/^cp\./i.test(name)) {
+            name = name.replace(/^cp\./i, '<span class="color-cookie">cp.</span>')
+          } else if (/^dom\./i.test(name)) {
+            name = name.replace(/^dom\./i, '<span class="color-dom">dom.</span>')
+          } else if (/^js_page\./i.test(name)) {
+            name = name.replace(/^js_page\./i, '<span class="color-javascript">js_page.</span>')
+          } else if (/^meta\./i.test(name)) {
+            name = name.replace(/^meta\./i, '<span class="color-meta">meta.</span>')
+          } else if (/^qp\./i.test(name)) {
+            name = name.replace(/^qp\./i, '<span class="color-querystring">qp.</span>')
           }
           return acc + `
             <div class="post-data-r">
-              <div class="post-data-r-varname">${cur}</div>
+              <div class="post-data-r-varname">${name}</div>
               <div class="post-data-r-varvalue">${value}</div>
             </div>`
         }, '')}`
@@ -187,6 +193,7 @@
             const newRequest = doc.createElement('div')
             const isPageView = this.isPageView(index)
             newRequest.setAttribute('class', `request${isPageView ? ' pageview' : ''}`)
+            newRequest.setAttribute('title', `${isPageView ? 'Pageview' : 'Event'}`)
             newRequest.innerHTML = `<a href="#" data-index="${index}">Request ${index + 1}</a>`
             newRequest.querySelector('a').addEventListener('click', event => {
               event.preventDefault()
@@ -214,7 +221,11 @@
       preserveLogCheckbox: doc.querySelector('#preserve-log'),
       clearRequests: doc.querySelector('.clear-requests'),
       keywordInput: doc.querySelector('#keyword'),
-      highlighterContextSelector: '.right .post-data'
+      jumpToPreviousKeywordMatch: doc.querySelector('.jump-to-keyword-match-prev'),
+      jumpToNextKeywordMatch: doc.querySelector('.jump-to-keyword-match-next'),
+      highlighterContextSelector: '.right .post-data',
+      highlighterResultList: [],
+      highlighterCurrentResultIndex: 0
     }
     scope.highlighterContext = doc.querySelectorAll(scope.highlighterContextSelector)
     scope.highlighter = new Mark(scope.highlighterContext)
@@ -242,13 +253,47 @@
     })
 
     /**
-     * Highlights all post data strings that match the searched keyword.
+     * Handles preserving/not-preserving of logs.
+     */
+    scope.preserveLogCheckbox.addEventListener('change', event => {
+      event.preventDefault()
+      scope.preserveLogFlag = !scope.preserveLogFlag
+    })
+
+    /**
+     * Scrolls to the 'current' keyword match.
+     */
+    scope.highlighterJumpTo = () => {
+      if (scope.highlighterResultList.length && scope.highlighterCurrentResultIndex > -1
+        && scope.highlighterCurrentResultIndex < scope.highlighterResultList.length) {
+        const tmp = doc.querySelector('mark.current')
+        if (tmp) {
+          tmp.classList.remove('current')
+        }
+        const highlighterCurrentResult = scope.highlighterResultList[scope.highlighterCurrentResultIndex]
+        highlighterCurrentResult.classList.add('current')
+        const navHeight = doc.querySelector('nav').getBoundingClientRect().height
+        scroll({
+          behavior: 'smooth',
+          top: highlighterCurrentResult.offsetTop - (navHeight * 1.5)
+        })
+      }
+    }
+
+    /**
+     * Highlights all post data strings that match the searched keyword, and scrolls to the first match.
      */
     scope.highlightKeyword = function () {
       var keyword = scope.keywordInput.value
       scope.highlighter.unmark({
         done: function () {
-          scope.highlighter.mark(keyword)
+          scope.highlighter.mark(keyword, {
+            done: function () {
+              scope.highlighterResultList = [...doc.querySelectorAll('mark')]
+              scope.highlighterCurrentResultIndex = 0
+              scope.highlighterJumpTo()
+            }
+          })
         }
       })
     }
@@ -259,11 +304,28 @@
     scope.keywordInput.addEventListener('keyup', scope.highlightKeyword)
 
     /**
-     * Handles preserving/not-preserving of logs.
+     * Scrolls to the previous keyword match.
      */
-    scope.preserveLogCheckbox.addEventListener('change', event => {
+    scope.jumpToPreviousKeywordMatch.addEventListener('click', event => {
       event.preventDefault()
-      scope.preserveLogFlag = !scope.preserveLogFlag
+      scope.highlighterCurrentResultIndex -= 1
+      if (scope.highlighterResultList.length && scope.highlighterCurrentResultIndex < 0) {
+        scope.highlighterCurrentResultIndex = scope.highlighterResultList.length - 1
+      }
+      scope.highlighterJumpTo()
+    })
+
+    /**
+     * Scrolls to the next keyword match.
+     */
+    scope.jumpToNextKeywordMatch.addEventListener('click', event => {
+      event.preventDefault()
+      scope.highlighterCurrentResultIndex += 1
+      if (scope.highlighterResultList.length
+        && scope.highlighterCurrentResultIndex === scope.highlighterResultList.length) {
+        scope.highlighterCurrentResultIndex = 0
+      }
+      scope.highlighterJumpTo()
     })
 
     /**
