@@ -221,6 +221,7 @@
       preserveLogCheckbox: doc.querySelector('#preserve-log'),
       clearRequests: doc.querySelector('.clear-requests'),
       keywordInput: doc.querySelector('#keyword'),
+      keywordMatchCount: doc.querySelector('#keyword-match-count'),
       jumpToPreviousKeywordMatch: doc.querySelector('.jump-to-keyword-match-prev'),
       jumpToNextKeywordMatch: doc.querySelector('.jump-to-keyword-match-next'),
       highlighterContextSelector: '.right .post-data',
@@ -270,6 +271,8 @@
         if (tmp) {
           tmp.classList.remove('current')
         }
+        scope.keywordMatchCount.value
+          = `${scope.highlighterCurrentResultIndex + 1}/${scope.highlighterResultList.length}`
         const highlighterCurrentResult = scope.highlighterResultList[scope.highlighterCurrentResultIndex]
         highlighterCurrentResult.classList.add('current')
         const navHeight = doc.querySelector('nav').getBoundingClientRect().height
@@ -287,6 +290,7 @@
       var keyword = scope.keywordInput.value
       scope.highlighter.unmark({
         done: function () {
+          scope.keywordMatchCount.value = ''
           scope.highlighter.mark(keyword, {
             done: function () {
               scope.highlighterResultList = [...doc.querySelectorAll('mark')]
