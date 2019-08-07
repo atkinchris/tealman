@@ -79,12 +79,22 @@ nav {
   cursor: pointer;
 }
 
-#keyword {
+.tab-controls label[for="preserve-log"] {
+  text-align: center;
+}
+
+#keyword,
+#keyword-match-count {
   padding: 5px;
 }
 
 #keyword:focus {
   outline-color: #fbdd0f;
+}
+
+#keyword-match-count {
+  max-width: 48px;
+  text-align: center;
 }
 
 .tab-controls .jump-to-keyword-match {
