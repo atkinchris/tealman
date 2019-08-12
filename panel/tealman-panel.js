@@ -144,7 +144,7 @@
        * For Tealium requests, a data layer variable named {eventCategory} must exist within TiQ.
        */
       getEventCategory (requestIndex) {
-        return (this.getDataVariable(requestIndex, 'ec') || this.getDataVariable(requestIndex, 'eventCategory') || '')
+        return (this.getDataVariable(requestIndex, 'ec') || this.getDataVariable(requestIndex, scope.eventCategoryUdoName) || '')
       }
 
       /**
@@ -155,7 +155,7 @@
        * For Tealium requests, a data layer variable named {eventAction} must exist within TiQ.
        */
       getEventAction (requestIndex) {
-        return (this.getDataVariable(requestIndex, 'ea') || this.getDataVariable(requestIndex, 'eventAction') || '')
+        return (this.getDataVariable(requestIndex, 'ea') || this.getDataVariable(requestIndex, scope.eventActionUdoName) || '')
       }
 
       /**
@@ -166,7 +166,7 @@
        * For Tealium requests, a data layer variabled named {eventLabel} must exist within TiQ.
        */
       getEventLabel (requestIndex) {
-        return (this.getDataVariable(requestIndex, 'el') || this.getDataVariable(requestIndex, 'eventLabel') || '')
+        return (this.getDataVariable(requestIndex, 'el') || this.getDataVariable(requestIndex, scope.eventLabelUdoName) || '')
       }
 
       /**
@@ -235,7 +235,13 @@
       settingsLightbox: doc.querySelector('.settings-lightbox'),
       settingsCloseButton: doc.querySelector('.settings-close-button'),
       autoFocusOnLatestRequestFlag: false,
-      autoFocusOnLatestRequestCheckbox: doc.querySelector('#auto-focus-on-latest-request')
+      autoFocusOnLatestRequestCheckbox: doc.querySelector('#auto-focus-on-latest-request'),
+      eventCategoryUdoName: 'eventCategory',
+      eventCategoryUdoNameInput: doc.querySelector('#event-category-udo-name'),
+      eventActionUdoName: 'eventAction',
+      eventActionUdoNameInput: doc.querySelector('#event-action-udo-name'),
+      eventLabelUdoName: 'eventLabel',
+      eventLabelUdoNameInput: doc.querySelector('#event-label-udo-name')
     }
     scope.highlighterContext = doc.querySelectorAll(scope.highlighterContextSelector)
     scope.highlighter = new Mark(scope.highlighterContext)
@@ -373,6 +379,27 @@
      */
     scope.autoFocusOnLatestRequestCheckbox.addEventListener('click', () => {
       scope.autoFocusOnLatestRequestFlag = !scope.autoFocusOnLatestRequestFlag
+    })
+
+    /**
+     * Sets the Event Category UDO name.
+     */
+    scope.eventCategoryUdoNameInput.addEventListener('keyup', () => {
+      scope.eventCategoryUdoName = scope.eventCategoryUdoNameInput.value
+    })
+
+    /**
+     * Sets the Event Action UDO name.
+     */
+    scope.eventActionUdoNameInput.addEventListener('keyup', () => {
+      scope.eventActionUdoName = scope.eventActionUdoNameInput.value
+    })
+
+    /**
+     * Sets the Event Label UDO name.
+     */
+    scope.eventLabelUdoNameInput.addEventListener('keyup', () => {
+      scope.eventLabelUdoName = scope.eventLabelUdoNameInput.value
     })
 
     /**

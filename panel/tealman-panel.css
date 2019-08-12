@@ -333,14 +333,21 @@ mark.current {
 }
 
 .settings-item {
+  align-items: center;
   display: flex;
   flex: 1;
+  margin-bottom: 8px;
 }
 
 .settings-item-name {
-  flex: 1;
+  flex: 2;
 }
 
 .settings-item-value {
-  flex: 2;
+  flex: 3;
+}
+
+.settings-item-value input {
+  padding: 5px;
+  width: 80%;
 }
