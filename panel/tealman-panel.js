@@ -203,6 +203,9 @@
               scope.highlightKeyword()
             })
             this.requestListWrapper.appendChild(newRequest)
+            if (scope.autoFocusOnLatestRequestFlag) {
+              newRequest.querySelector('a').click()
+            }
             const tealProEnv = this.getTealiumProfileEnvironment(index)
             if (this.tealiumProfileEnvironment && tealProEnv) {
               this.tealiumProfileEnvironment.innerHTML = tealProEnv
@@ -219,14 +222,20 @@
       tealiumTabSwicther: doc.querySelector('.tab-switcher a[data-tab*="tab-tealium"]'),
       preserveLogFlag: false,
       preserveLogCheckbox: doc.querySelector('#preserve-log'),
-      clearRequests: doc.querySelector('.clear-requests'),
       keywordInput: doc.querySelector('#keyword'),
       keywordMatchCount: doc.querySelector('#keyword-match-count'),
       jumpToPreviousKeywordMatch: doc.querySelector('.jump-to-keyword-match-prev'),
       jumpToNextKeywordMatch: doc.querySelector('.jump-to-keyword-match-next'),
       highlighterContextSelector: '.right .post-data',
       highlighterResultList: [],
-      highlighterCurrentResultIndex: 0
+      highlighterCurrentResultIndex: 0,
+      clearRequests: doc.querySelector('.clear-requests'),
+      settingsButton: doc.querySelector('.tab-ctrl-settings a'),
+      shadow: doc.querySelector('.shadow'),
+      settingsLightbox: doc.querySelector('.settings-lightbox'),
+      settingsCloseButton: doc.querySelector('.settings-close-button'),
+      autoFocusOnLatestRequestFlag: false,
+      autoFocusOnLatestRequestCheckbox: doc.querySelector('#auto-focus-on-latest-request')
     }
     scope.highlighterContext = doc.querySelectorAll(scope.highlighterContextSelector)
     scope.highlighter = new Mark(scope.highlighterContext)
@@ -339,6 +348,31 @@
       event.preventDefault()
       scope.gaTab.init()
       scope.tealiumTab.init()
+    })
+
+    /**
+     * Handles opening of the settings lightbox.
+     */
+    scope.settingsButton.addEventListener('click', event => {
+      event.preventDefault()
+      scope.shadow.classList.add('open')
+      scope.settingsLightbox.classList.add('open')
+    })
+
+    /**
+     * Handles closing of the settings lightbox.
+     */
+    scope.settingsCloseButton.addEventListener('click', event => {
+      event.preventDefault()
+      scope.shadow.classList.remove('open')
+      scope.settingsLightbox.classList.remove('open')
+    })
+
+    /**
+     * Enables/disables auto rendering of the latest request data.
+     */
+    scope.autoFocusOnLatestRequestCheckbox.addEventListener('click', () => {
+      scope.autoFocusOnLatestRequestFlag = !scope.autoFocusOnLatestRequestFlag
     })
 
     /**
