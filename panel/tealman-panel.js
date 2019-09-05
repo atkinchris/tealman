@@ -132,8 +132,10 @@
        * Checks if the request at the given index is a page view.
        */
       isPageView (requestIndex) {
-        return (this.getDataVariable(requestIndex, 't') === 'pageview'
-          || this.getDataVariable(requestIndex, 'tealium_event') === 'view')
+        return (
+          this.getDataVariable(requestIndex, 't') === 'pageview'
+          || this.getDataVariable(requestIndex, 'tealium_event') === 'view'
+        )
       }
 
       /**
@@ -144,7 +146,11 @@
        * For Tealium requests, a data layer variable named {eventCategory} must exist within TiQ.
        */
       getEventCategory (requestIndex) {
-        return (this.getDataVariable(requestIndex, 'ec') || this.getDataVariable(requestIndex, 'eventCategory') || '')
+        return (
+          this.getDataVariable(requestIndex, 'ec')
+          || this.getDataVariable(requestIndex, (scope.eventCategoryUdoName || 'eventCategory'))
+          || ''
+        )
       }
 
       /**
@@ -155,7 +161,11 @@
        * For Tealium requests, a data layer variable named {eventAction} must exist within TiQ.
        */
       getEventAction (requestIndex) {
-        return (this.getDataVariable(requestIndex, 'ea') || this.getDataVariable(requestIndex, 'eventAction') || '')
+        return (
+          this.getDataVariable(requestIndex, 'ea')
+          || this.getDataVariable(requestIndex, (scope.eventActionUdoName || 'eventAction'))
+          || ''
+        )
       }
 
       /**
@@ -166,7 +176,11 @@
        * For Tealium requests, a data layer variabled named {eventLabel} must exist within TiQ.
        */
       getEventLabel (requestIndex) {
-        return (this.getDataVariable(requestIndex, 'el') || this.getDataVariable(requestIndex, 'eventLabel') || '')
+        return (
+          this.getDataVariable(requestIndex, 'el')
+          || this.getDataVariable(requestIndex, (scope.eventLabelUdoName || 'eventLabel'))
+          || ''
+        )
       }
 
       /**
@@ -179,7 +193,7 @@
         const profile = this.getDataVariable(requestIndex, 'tealium_profile')
         const environment = this.getDataVariable(requestIndex, 'tealium_environment')
         if (profile && environment) {
-          result = `${profile} / ${environment}`
+          result = `${profile} / <span class="${environment}">${environment}</span>`
         }
         return result
       }
@@ -194,15 +208,36 @@
             const isPageView = this.isPageView(index)
             newRequest.setAttribute('class', `request${isPageView ? ' pageview' : ''}`)
             newRequest.setAttribute('title', `${isPageView ? 'Pageview' : 'Event'}`)
-            newRequest.innerHTML = `<a href="#" data-index="${index}">Request ${index + 1}</a>`
-            newRequest.querySelector('a').addEventListener('click', event => {
+            newRequest.innerHTML = `
+              <a href="#" class="btn btn-light" data-index="${index}">
+                ${isPageView ? '<i class="fab fa-product-hunt"></i>' : ''} Request ${index + 1}
+                <span class="request-accordion expanded">
+                  <i class="fas fa-chevron-down"></i>
+                </span>
+                <span class="request-accordion collapsed">
+                  <i class="fas fa-chevron-right"></i>
+                </span>
+              </a>
+            `
+            const newRequestLink = newRequest.querySelector('.btn')
+            newRequestLink.addEventListener('click', event => {
               event.preventDefault()
+              if (event.target.classList.contains('active')) {
+                event.target.classList.remove('active')
+                this.container.querySelector('.right').classList.toggle('active')
+              } else {
+                this.container.querySelectorAll('.left .request .btn.active')
+                  .forEach(active => active.classList.remove('active'))
+                event.target.classList.add('active')
+                this.container.querySelector('.right').classList.add('active')
+              }
               this.showPostData(parseInt(event.target.dataset.index))
-              this.container.querySelectorAll('.request a.active').forEach(cur => cur.classList.remove('active'))
-              event.target.classList.add('active')
               scope.highlightKeyword()
             })
             this.requestListWrapper.appendChild(newRequest)
+            if (scope.autoFocusOnLatestRequestFlag) {
+              newRequest.querySelector('.btn').click()
+            }
             const tealProEnv = this.getTealiumProfileEnvironment(index)
             if (this.tealiumProfileEnvironment && tealProEnv) {
               this.tealiumProfileEnvironment.innerHTML = tealProEnv
@@ -214,19 +249,33 @@
 
     const scope = {
       gaTab: new Tab('.tab-ga'),
-      gaTabSwicther: doc.querySelector('.tab-switcher a[data-tab*="tab-ga"]'),
       tealiumTab: new Tab('.tab-tealium'),
+      gaTabSwicther: doc.querySelector('.tab-switcher a[data-tab*="tab-ga"]'),
       tealiumTabSwicther: doc.querySelector('.tab-switcher a[data-tab*="tab-tealium"]'),
-      preserveLogFlag: false,
-      preserveLogCheckbox: doc.querySelector('#preserve-log'),
-      clearRequests: doc.querySelector('.clear-requests'),
       keywordInput: doc.querySelector('#keyword'),
       keywordMatchCount: doc.querySelector('#keyword-match-count'),
       jumpToPreviousKeywordMatch: doc.querySelector('.jump-to-keyword-match-prev'),
       jumpToNextKeywordMatch: doc.querySelector('.jump-to-keyword-match-next'),
       highlighterContextSelector: '.right .post-data',
       highlighterResultList: [],
-      highlighterCurrentResultIndex: 0
+      highlighterCurrentResultIndex: 0,
+      preserveLogFlag: false,
+      preserveLogCheckbox: doc.querySelector('.preserve-log'),
+      preserveLogCheckboxIcons: doc.querySelectorAll('.preserve-log i'),
+      clearRequestsButton: doc.querySelector('.clear-requests'),
+      settingsButton: doc.querySelector('.tab-ctrl-settings a'),
+      shadow: doc.querySelector('.shadow'),
+      settingsLightbox: doc.querySelector('.settings-lightbox'),
+      settingsLightboxCloseButton: doc.querySelector('.settings-close'),
+      autoFocusOnLatestRequestFlag: false,
+      autoFocusOnLatestRequestCheckbox: doc.querySelector('.auto-focus-on-latest-request'),
+      autoFocusOnLatestRequestCheckboxIcons: doc.querySelectorAll('.auto-focus-on-latest-request i'),
+      eventCategoryUdoName: '',
+      eventCategoryUdoNameInput: doc.querySelector('#event-category-udo-name'),
+      eventActionUdoName: '',
+      eventActionUdoNameInput: doc.querySelector('#event-action-udo-name'),
+      eventLabelUdoName: '',
+      eventLabelUdoNameInput: doc.querySelector('#event-label-udo-name')
     }
     scope.highlighterContext = doc.querySelectorAll(scope.highlighterContextSelector)
     scope.highlighter = new Mark(scope.highlighterContext)
@@ -239,6 +288,10 @@
       scope.tealiumTabSwicther.classList.remove('active')
       scope.tealiumTab.hide()
       scope.gaTabSwicther.classList.add('active')
+      
+      scope.highlighterContext = doc.querySelectorAll(scope.highlighterContextSelector)
+      scope.highlighter = new Mark(scope.highlighterContext)
+
       scope.gaTab.show()
     })
 
@@ -250,15 +303,11 @@
       scope.gaTabSwicther.classList.remove('active')
       scope.gaTab.hide()
       scope.tealiumTabSwicther.classList.add('active')
-      scope.tealiumTab.show()
-    })
+      
+      scope.highlighterContext = doc.querySelectorAll(scope.highlighterContextSelector)
+      scope.highlighter = new Mark(scope.highlighterContext)
 
-    /**
-     * Handles preserving/not-preserving of logs.
-     */
-    scope.preserveLogCheckbox.addEventListener('change', event => {
-      event.preventDefault()
-      scope.preserveLogFlag = !scope.preserveLogFlag
+      scope.tealiumTab.show()
     })
 
     /**
@@ -333,12 +382,85 @@
     })
 
     /**
+     * Handles preserving/not-preserving of logs.
+     */
+    scope.preserveLogCheckbox.addEventListener('click', event => {
+      event.preventDefault()
+      scope.preserveLogFlag = !scope.preserveLogFlag
+      scope.preserveLogCheckboxIcons.forEach(icon => icon.classList.toggle('hidden'))
+    })
+
+    /**
      * Handles clearing of all requests.
      */
-    scope.clearRequests.addEventListener('click', event => {
+    scope.clearRequestsButton.addEventListener('click', event => {
       event.preventDefault()
       scope.gaTab.init()
       scope.tealiumTab.init()
+    })
+
+    /**
+     * @param {boolean} open
+     * Opens the settings lightbox if 'open' is set to 'true'.
+     * Closes the settings lightbox if 'open' is set to 'false'.
+     */
+    scope.toggleSettingsLightbox = (open) => {
+      const toggle = open ? 'add' : 'remove'
+      scope.shadow.classList[toggle]('open')
+      scope.settingsLightbox.classList[toggle]('open')
+    }
+
+    /**
+     * Handles opening of the settings lightbox.
+     */
+    scope.settingsButton.addEventListener('click', event => {
+      event.preventDefault()
+      scope.toggleSettingsLightbox(true)
+    })
+
+    /**
+     * Handles closing of the settings lightbox.
+     */
+    scope.shadow.addEventListener('click', () => {
+      scope.toggleSettingsLightbox(false)
+    })
+
+    /**
+     * Handles closing of the settings lightbox.
+     */
+    scope.settingsLightboxCloseButton.addEventListener('click', event => {
+      event.preventDefault()
+      scope.toggleSettingsLightbox(false)
+    })
+
+    /**
+     * Enables/disables auto rendering of the latest request data.
+     */
+    scope.autoFocusOnLatestRequestCheckbox.addEventListener('click', event => {
+      event.preventDefault()
+      scope.autoFocusOnLatestRequestFlag = !scope.autoFocusOnLatestRequestFlag
+      scope.autoFocusOnLatestRequestCheckboxIcons.forEach(icon => icon.classList.toggle('hidden'))
+    })
+
+    /**
+     * Sets the Event Category UDO name.
+     */
+    scope.eventCategoryUdoNameInput.addEventListener('keyup', () => {
+      scope.eventCategoryUdoName = scope.eventCategoryUdoNameInput.value
+    })
+
+    /**
+     * Sets the Event Action UDO name.
+     */
+    scope.eventActionUdoNameInput.addEventListener('keyup', () => {
+      scope.eventActionUdoName = scope.eventActionUdoNameInput.value
+    })
+
+    /**
+     * Sets the Event Label UDO name.
+     */
+    scope.eventLabelUdoNameInput.addEventListener('keyup', () => {
+      scope.eventLabelUdoName = scope.eventLabelUdoNameInput.value
     })
 
     /**
@@ -409,8 +531,8 @@
     gl.tealman = scope
 
     return true
-  } catch (error) {
-    console.error(error)
+  } catch (err) {
+    console.error(err)
     return false
   }
 })(window, window.document)
