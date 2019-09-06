@@ -1,18 +1,22 @@
 const del = require('del')
 const gulp = require('gulp')
+const gulpZip = require('gulp-zip')
 
 const paths = {
   build: 'build',
+  dist: 'dist',
+  release: 'tealman.zip',
   src: 'src',
 }
 
-function taskClean () {
+function clean () {
   return del([
-    `${paths.build}/*`
+    `${paths.build}/*`,
+    `${paths.dist}/*`
   ])
 }
 
-function taskCopyAssetsRoot () {
+function copyRootAssets () {
   return gulp.src([
     `${paths.src}/devtoolspage.html`,
     `${paths.src}/devtoolspage.js`,
@@ -21,10 +25,17 @@ function taskCopyAssetsRoot () {
   ]).pipe(gulp.dest(`${paths.build}`))
 }
 
-const build = gulp.series(taskClean, taskCopyAssetsRoot)
+function zip () {
+  return gulp.src(`${paths.build}/*`)
+    .pipe(gulpZip(`${paths.release}`))
+    .pipe(gulp.dest(`${paths.dist}`))
+}
 
-exports.clean = taskClean
+const build = gulp.series(clean, copyRootAssets)
+const release = gulp.series(build, zip)
 
+exports.clean = clean
 exports.build = build
+exports.release = release
 
 exports.default = build

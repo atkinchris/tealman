@@ -28,6 +28,7 @@
   "homepage": "https://github.com/temelm/tealman#readme",
   "devDependencies": {
     "del": "^5.1.0",
-    "gulp": "^4.0.2"
+    "gulp": "^4.0.2",
+    "gulp-zip": "^5.0.0"
   }
 }
