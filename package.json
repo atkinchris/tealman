@@ -1,0 +1,33 @@
+{
+  "name": "tealman",
+  "version": "2.0.0",
+  "description": "Extends Chrome DevTools to capture data sent to Google Analytics and Tealium iQ.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/temelm/tealman.git"
+  },
+  "keywords": [
+    "analytics",
+    "debug",
+    "google",
+    "google",
+    "analytics",
+    "tealium",
+    "tealium",
+    "iq"
+  ],
+  "author": "Mustafa Temel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/temelm/tealman/issues"
+  },
+  "homepage": "https://github.com/temelm/tealman#readme",
+  "devDependencies": {
+    "del": "^5.1.0",
+    "gulp": "^4.0.2"
+  }
+}
