@@ -2,7 +2,7 @@
   "name": "tealman",
   "version": "2.0.0",
   "description": "Extends Chrome DevTools to capture data sent to Google Analytics and Tealium iQ.",
-  "main": "index.js",
+  "main": "src/panel/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -27,10 +27,13 @@
   },
   "homepage": "https://github.com/temelm/tealman#readme",
   "devDependencies": {
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
     "autoprefixer": "^9.6.1",
     "cssnano": "^4.1.10",
     "del": "^5.1.0",
     "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-htmlmin": "^5.0.1",
     "gulp-postcss": "^8.0.0",
