@@ -2,6 +2,7 @@ const autoprefixer = require('autoprefixer')
 const cssnano = require('cssnano')
 const del = require('del')
 const gulp = require('gulp')
+const gulpBabel = require('gulp-babel');
 const gulpConcat = require('gulp-concat')
 const gulpHtmlmin = require('gulp-htmlmin')
 const gulpPostcss = require('gulp-postcss')
@@ -10,50 +11,62 @@ const gulpSass = require('gulp-sass')
 const gulpUglify = require('gulp-uglify')
 const gulpZip = require('gulp-zip')
 
-const paths = {
+const directories = {
   build: 'build',
+  buildPanel: 'build/panel',
   dist: 'dist',
-  releaseOutput: 'tealman.zip',
-  src: 'src'
+  src: 'src',
+  srcPanel: 'src/panel'
 }
-paths.buildPanel = `${paths.build}/panel`
-paths.html = {
-  src: `${paths.src}/panel/index.html`,
-  output: 'index.html'
-}
-paths.styles = {
-  src: `${paths.src}/panel/styles/*.scss`,
-  output: 'bundle.css'
-}
-paths.scripts = {
-  src: `${paths.src}/panel/scripts/*.js`,
-  output: 'bundle.js',
-  vendors: {
-    src: `${paths.src}/panel/scripts/vendors/*.js`,
-    output: 'vendors.js'
-  }
+const paths = {
+  html: {
+    src: `${directories.srcPanel}/index.html`,
+    output: 'index.html',
+    dest: directories.buildPanel
+  },
+  styles: {
+    src: `${directories.srcPanel}/styles/*.scss`,
+    output: 'bundle.css',
+    dest: directories.buildPanel
+  },
+  scripts: {
+    src: [
+      `${directories.srcPanel}/scripts/RequestFilter.js`,
+      `${directories.srcPanel}/scripts/Request.js`,
+      `${directories.srcPanel}/scripts/index.js`
+    ],
+    output: 'bundle.js',
+    dest: directories.buildPanel,
+    vendors: {
+      src: `${directories.srcPanel}/scripts/vendors/*.js`,
+      output: 'vendors.js',
+      dest: directories.buildPanel
+    }
+  },
+  releaseOutput: 'tealman.zip'
 }
 
-function clean () {
+function taskClean () {
   return del([
-    `${paths.build}`,
-    `${paths.dist}`
+    `${directories.build}/*`,
+    `${directories.dist}/*`
   ])
 }
 
 function copyRootAssets () {
   return gulp.src([
-    `${paths.src}/devtoolspage.html`,
-    `${paths.src}/devtoolspage.js`,
-    `${paths.src}/icon-128.png`,
-    `${paths.src}/manifest.json`
-  ]).pipe(gulp.dest(`${paths.build}`))
+    `${directories.src}/devtoolspage.html`,
+    `${directories.src}/devtoolspage.js`,
+    `${directories.src}/icon-128.png`,
+    `${directories.src}/manifest.json`
+  ]).pipe(gulp.dest(directories.build))
 }
 
 function html () {
   return gulp.src(paths.html.src)
     .pipe(gulpHtmlmin({collapseWhitespace: true}))
-    .pipe(gulp.dest(paths.buildPanel))
+    .pipe(gulpRename(paths.html.output))
+    .pipe(gulp.dest(paths.html.dest))
 }
 
 function styles () {
@@ -61,27 +74,43 @@ function styles () {
     .pipe(gulpSass())
     .pipe(gulpPostcss([autoprefixer(), cssnano()]))
     .pipe(gulpRename(paths.styles.output))
-    .pipe(gulp.dest(paths.buildPanel))
+    .pipe(gulp.dest(paths.styles.dest))
 }
 
 function copyVendorScripts () {
   return gulp.src(paths.scripts.vendors.src)
     .pipe(gulpUglify())
     .pipe(gulpConcat(paths.scripts.vendors.output))
-    .pipe(gulp.dest(paths.buildPanel))
+    .pipe(gulp.dest(paths.scripts.vendors.dest))
+}
+
+function scripts () {
+  return gulp.src(paths.scripts.src)
+    .pipe(gulpBabel({
+      presets: ['@babel/preset-env']
+    }))
+    .pipe(gulpUglify())
+    .pipe(gulpConcat(paths.scripts.output))
+    .pipe(gulp.dest(paths.scripts.dest))
+}
+
+const taskBuild = gulp.series(taskClean, copyRootAssets, html, styles, copyVendorScripts, scripts)
+
+function taskWatch () {
+  return gulp.watch(`${directories.srcPanel}/**/*`, taskBuild)
 }
 
 function zip () {
-  return gulp.src(`${paths.build}/*`)
-    .pipe(gulpZip(`${paths.releaseOutput}`))
-    .pipe(gulp.dest(`${paths.dist}`))
+  return gulp.src(`${directories.build}/*`)
+    .pipe(gulpZip(paths.releaseOutput))
+    .pipe(gulp.dest(directories.dist))
 }
 
-const build = gulp.series(clean, copyRootAssets, html, styles, copyVendorScripts)
-const release = gulp.series(build, zip)
+const taskRelease = gulp.series(taskBuild, zip)
 
-exports.clean = clean
-exports.build = build
-exports.release = release
+exports.clean = taskClean
+exports.build = taskBuild
+exports.watch = taskWatch
+exports.release = taskRelease
 
-exports.default = build
+exports.default = taskBuild
