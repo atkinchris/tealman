@@ -1,6 +1,6 @@
 {
   "name": "tealman",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Extends Chrome DevTools to capture data sent to Google Analytics and Tealium iQ.",
   "main": "src/panel/index.js",
   "scripts": {
