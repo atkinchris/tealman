@@ -1,0 +1,91 @@
+.request {
+  font-size: small;
+  margin-bottom: $spacingXs;
+
+  .request-link {
+    display: flex;
+    font-weight: normal;
+
+    > span {
+      flex: 3;
+      pointer-events: none;
+
+      &.request-id,
+      &.request-accordion {
+        flex: 1;
+      }
+
+      &.request-type {
+        flex: 2;
+      }
+    }
+
+    .request-accordion {
+      text-align: right;
+
+      .fa-chevron-down {
+        display: none;
+      }
+    }
+  }
+
+  .request-data {
+    background-color: $colorBackgroundLight;
+    border: $borderWidth solid $colorBorderActive;
+    border-radius: $borderRadius;
+    display: none;
+    padding: $spacingXs;
+
+    .request-data-row {
+      display: flex;
+      padding: $spacingXxs;
+
+      .request-data-row-name {
+        flex: 1;
+        overflow: hidden;
+        word-wrap: break-word;
+      }
+
+      .request-data-row-value {
+        flex: 3;
+        overflow: hidden;
+        padding-left: $spacingSm;
+        word-wrap: break-word;
+      }
+
+      &:nth-child(odd) {
+        background-color: $colorBackgroundLightHover;
+        border: $borderWidth solid $colorBackgroundLightHover;
+        border-radius: $borderRadius;
+      }
+    }
+  }
+
+  &.active {
+    .request-link {
+      background-color: $colorBackgroundActive;
+      border-color: $colorBorderActive;
+      font-weight: bold;
+
+      .request-accordion {
+        .fa-chevron-down {
+          display: inline-block;
+        }
+
+        .fa-chevron-right {
+          display: none;
+        }
+      }
+    }
+
+    .request-data {
+      display: block;
+    }
+  }
+}
+
+@media screen and (max-width: $breakpointMd) {
+  .request-timestamp {
+    display: none;
+  }
+}
