@@ -101,7 +101,7 @@ function taskWatch () {
 }
 
 function zip () {
-  return gulp.src(`${directories.build}/*`)
+  return gulp.src(`${directories.build}/**/*`)
     .pipe(gulpZip(paths.releaseOutput))
     .pipe(gulp.dest(directories.dist))
 }
