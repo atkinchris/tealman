@@ -7,6 +7,7 @@ const scope = {
   domCheckboxPreserveLog: document.querySelector('.nav-ctrl-preserve-log .iconbtn'),
   domInputSearchResultsCount: document.querySelector('#search-results-count'),
   domInputSearchTerm: document.querySelector('#search-term'),
+  domListening: document.querySelector('.listening'),
   domRequestList: document.querySelector('.request-list'),
   domSettingsLightbox: document.querySelector('.settings-lightbox'),
   domShadow: document.querySelector('.shadow'),
@@ -127,8 +128,6 @@ scope.requestFilterList = [
  * @param {object} req
  * 
  * Observes network activity to capture Google Analytics and Tealium iQ requests.
- * 
- * @todo: Hide 'Listening...' <div>.
  */
 scope.watchNetwork = req => {
   if (req && req.request) {
@@ -139,6 +138,7 @@ scope.watchNetwork = req => {
           const newRequest = new Request(scope.requestList.length + 1, filter.origin, data)
           scope.requestList.push(newRequest)
           scope.domRequestList.appendChild(newRequest.createDomElement())
+          scope.domListening.classList.add('hidden')
         }
       }
     })
@@ -149,13 +149,12 @@ chrome.devtools.network.onRequestFinished.addListener(scope.watchNetwork)
 
 /**
  * Clears all requests.
- * 
- * @todo: Show 'Listening...' <div>.
  */
 scope.clearRequestList = () => {
   scope.requestList = []
   scope.domRequestList.innerHTML = ''
   scope.domInputSearchResultsCount.value = ''
+  scope.domListening.classList.remove('hidden')
 }
 
 chrome.devtools.network.onNavigated.addListener(() => {
