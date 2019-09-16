@@ -25,7 +25,7 @@ class RequestFilter {
   /**
    * @param {boolean} active
    * 
-   * Toggler for the active property.
+   * Toggler for the {active} property.
    */
   toggleActive () {
     this.active = !this.active
