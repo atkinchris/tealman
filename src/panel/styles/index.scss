@@ -1,0 +1,140 @@
+$bodyMaxWidth: 960px;
+$bodyMinWidth: 480px;
+
+$borderRadius: 4px;
+$borderWidth: 1px;
+
+$breakpointMd: 720px;
+
+$colorBackgroundActive: #ffce00;
+$colorBackgroundLight: #fff;
+$colorBackgroundLightHover: #e6e6e6;
+$colorBlack: #000;
+$colorBorderActive: #d2b92b;
+$colorBorderLight: #ccc;
+$colorBorderLightHover: #adadad;
+$colorFontDark: #222;
+$colorFontLight: #fff;
+$colorTeal: #0d7e83;
+
+$fontFamily: sans-serif;
+
+$navHeight: 45px;
+
+$spacingXxs: 4px;
+$spacingXs: 8px;
+$spacingSm: 16px;
+$spacingMd: 32px;
+$spacingLg: 48px;
+
+body {
+  background-color: #fffaf0;
+  color: $colorFontDark;
+  font-family: $fontFamily;
+  min-width: $bodyMinWidth;
+}
+
+.wrapper {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 960px;
+}
+
+.hidden {
+  display: none;
+}
+
+.linkbtn {
+  border: $borderWidth solid transparent;
+  border-radius: $borderRadius;
+  display: inline-block;
+  font-weight: bold;
+  padding: $spacingXs;
+  text-decoration: none;
+
+  &.linkbtn-light {
+    background-color: $colorBackgroundLight;
+    border-color: $colorBorderLight;
+    color: $colorFontDark;
+
+    &:hover {
+      background-color: $colorBackgroundLightHover;
+      border-color: $colorBorderLightHover;
+    }
+  }
+}
+
+.listening {
+  font-size: medium;
+  margin-top: calc(#{$navHeight} * #{2});
+  opacity: 0.67;
+  text-align: center;
+
+  i {
+    margin-top: $spacingXs;
+  }
+}
+
+.request-list {
+  margin-top: calc(#{$navHeight} + #{$spacingXs});
+}
+
+.highlight {
+  background-color: transparent;
+  color: $colorBlack;
+  font-weight: bold;
+
+  &.highlight-cookie {
+    color: #e7674b;
+  }
+
+  &.highlight-dom {
+    color: #915130;
+  }
+
+  &.highlight-javascript {
+    color: #2976ac;
+  }
+
+  &.highlight-meta {
+    color: #70bfda;
+  }
+
+  &.highlight-querystring {
+    color: #979749;
+  }
+}
+
+mark {
+  background-color: $colorBackgroundActive;
+}
+
+.author-contribution {
+  font-size: xx-small;
+  opacity: 0.5;
+
+  a {
+    color: $colorFontDark;
+  }
+}
+
+.shadow {
+  background-color: $colorFontDark;
+  display: none;
+  height: 100%;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 2;
+
+  &.open {
+    display: block;
+    opacity: 0.5;
+  }
+}
+
+@import './nav';
+@import './request';
+@import './settings-lightbox';

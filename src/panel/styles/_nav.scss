@@ -1,0 +1,66 @@
+nav {
+  align-items: center;
+  border-radius: 0 0 $borderRadius $borderRadius;
+  background-color: $colorTeal;
+  display: flex;
+  left: 0;
+  margin: 0 auto;
+  max-width: calc(#{$bodyMaxWidth} - #{$spacingSm});
+  min-width: $bodyMinWidth;
+  padding: $spacingXs;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1;
+
+  > div {
+    flex: 1;
+  }
+
+  .iconbtn {
+    color: $colorBackgroundLight;
+    text-decoration: none;
+
+    &:hover {
+      color: $colorBackgroundLightHover;
+    }
+  }
+
+  .nav-left {
+    #search-term {
+      border: none;
+      border-radius: $borderRadius 0 0 $borderRadius;
+      padding: $spacingXs;
+
+      &:focus {
+        outline-color: $colorBackgroundActive;
+      }
+    }
+
+    #search-results-count {
+      border: none;
+      border-radius: 0 $borderRadius $borderRadius 0;
+      margin-left: -3px; /* Monkey patch */
+      max-width: $spacingLg;
+      padding: $spacingXs;
+      text-align: center;
+    }
+  }
+
+  .nav-right {
+    text-align: right;
+
+    .nav-ctrl {
+      display: inline-block;
+      margin-left: $spacingSm;
+
+      .hidden {
+        display: none;
+      }
+
+      .fa-check-square {
+        color: $colorBackgroundActive;
+      }
+    }
+  }
+}

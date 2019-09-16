@@ -1,0 +1,72 @@
+.settings-lightbox {
+  background-color: $colorFontLight;
+  border-radius: $borderRadius;
+  bottom: 0;
+  display: none;
+  height: calc(#{$bodyMinWidth} / #{2});
+  left: 0;
+  margin: auto;
+  max-height: $bodyMinWidth;
+  max-width: $bodyMinWidth;
+  padding: $spacingSm;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100%;
+  z-index: 3;
+
+  &.open {
+    display: block;
+    opacity: 1;
+  }
+
+  .settings-close {
+    position: absolute;
+    right: $spacingSm;
+
+    .iconbtn {
+      color: $colorFontDark;
+      font-size: large;
+    }
+  }
+
+  h2 {
+    font-weight: bold;
+    margin-bottom: $spacingSm;
+    margin-top: 0;
+  }
+
+  h3 {
+    margin-bottom: $spacingXxs;
+    margin-top: 0;
+  }
+
+  .settings-item {
+    display: flex;
+
+    .settings-item-name {
+      align-items: center;
+      display: flex;
+      flex: 2;
+      padding-left: $spacingXs;
+    }
+
+    .settings-item-value {
+      align-items: center;
+      display: flex;
+      flex: 3;
+      padding-left: $spacingXs;
+    }
+
+    .filter-google-analytics,
+    .filter-tealium-iq {
+      color: $colorTeal;
+      font-size: medium;
+      text-decoration: none;
+
+      .hidden {
+        display: none;
+      }
+    }
+  }
+}
