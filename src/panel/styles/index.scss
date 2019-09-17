@@ -70,8 +70,9 @@ body {
   opacity: 0.67;
   text-align: center;
 
-  i {
+  img {
     margin-top: $spacingXs;
+    max-width: 64px;
   }
 }
 
