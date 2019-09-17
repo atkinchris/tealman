@@ -1,18 +1,16 @@
 .settings-lightbox {
   background-color: $colorFontLight;
   border-radius: $borderRadius;
-  bottom: 0;
   display: none;
-  height: calc(#{$bodyMinWidth} / #{2});
-  left: 0;
+  left: 50%;
   margin: auto;
   max-height: $bodyMinWidth;
   max-width: $bodyMinWidth;
   padding: $spacingSm;
   position: fixed;
-  right: 0;
-  top: 0;
-  width: 100%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
   z-index: 3;
 
   &.open {
@@ -31,9 +29,11 @@
   }
 
   h2 {
+    border-bottom: 1px solid $colorFontDark;
     font-weight: bold;
     margin-bottom: $spacingSm;
     margin-top: 0;
+    padding-bottom: $spacingSm;
   }
 
   h3 {
