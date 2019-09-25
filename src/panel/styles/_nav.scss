@@ -6,7 +6,6 @@ nav {
   left: 0;
   margin: 0 auto;
   max-width: calc(#{$bodyMaxWidth} - #{$spacingSm});
-  min-width: $bodyMinWidth;
   padding: $spacingXs;
   position: fixed;
   right: 0;
@@ -27,23 +26,27 @@ nav {
   }
 
   .nav-left {
-    #search-term {
-      border: none;
-      border-radius: $borderRadius 0 0 $borderRadius;
-      padding: $spacingXs;
+    .nav-ctrl-search {
+      display: flex;
 
-      &:focus {
-        outline-color: $colorBackgroundActive;
+      #search-term {
+        border: none;
+        border-radius: $borderRadius 0 0 $borderRadius;
+        padding: $spacingXs;
+  
+        &:focus {
+          outline-color: $colorBackgroundActive;
+        }
       }
-    }
-
-    #search-results-count {
-      border: none;
-      border-radius: 0 $borderRadius $borderRadius 0;
-      margin-left: -3px; /* Monkey patch */
-      max-width: $spacingLg;
-      padding: $spacingXs;
-      text-align: center;
+  
+      #search-results-count {
+        background-color: $colorBackgroundLight;
+        border: none;
+        border-radius: 0 $borderRadius $borderRadius 0;
+        max-width: $spacingLg;
+        padding: $spacingXs;
+        text-align: center;
+      }
     }
   }
 
@@ -62,5 +65,16 @@ nav {
         color: $colorBackgroundActive;
       }
     }
+  }
+}
+
+@media screen and (max-width: $breakpointSm) {
+  .nav-left {
+    display: none;
+  }
+
+  .nav-right {
+    padding-bottom: calc(#{$spacingXs} - #{1px}); /* Monkey patch */
+    padding-top: $spacingXs;
   }
 }

@@ -38,7 +38,7 @@
 
     .request-data-row {
       display: flex;
-      padding: $spacingXxs;
+      padding: calc(#{$spacingXxs} * #{1.5});
 
       .request-data-row-name {
         flex: 1;
@@ -86,6 +86,12 @@
 
 @media screen and (max-width: $breakpointMd) {
   .request-timestamp {
+    display: none;
+  }
+}
+
+@media screen and (max-width: $breakpointSm) {
+  .request-link > span:not([class^="request"]) {
     display: none;
   }
 }
