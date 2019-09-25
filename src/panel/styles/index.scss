@@ -4,6 +4,7 @@ $bodyMinWidth: 480px;
 $borderRadius: 4px;
 $borderWidth: 1px;
 
+$breakpointSm: 400px;
 $breakpointMd: 720px;
 
 $colorBackgroundActive: #ffce00;
@@ -31,7 +32,6 @@ body {
   background-color: #fffaf0;
   color: $colorFontDark;
   font-family: $fontFamily;
-  min-width: $bodyMinWidth;
 }
 
 .wrapper {
@@ -113,6 +113,10 @@ mark {
 .author-contribution {
   font-size: xx-small;
   opacity: 0.5;
+
+  summary {
+    outline-color: $colorTeal;
+  }
 
   a {
     color: $colorFontDark;

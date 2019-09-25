@@ -137,6 +137,7 @@ scope.watchNetwork = req => {
         if (data) {
           const newRequest = new Request(scope.requestList.length + 1, filter.origin, data)
           scope.requestList.push(newRequest)
+          // scope.domRequestList.prepend(newRequest.createDomElement())
           scope.domRequestList.appendChild(newRequest.createDomElement())
           scope.domListening.classList.add('hidden')
         }
@@ -157,9 +158,26 @@ scope.clearRequestList = () => {
   scope.domListening.classList.remove('hidden')
 }
 
-chrome.devtools.network.onNavigated.addListener(() => {
+/**
+ * @param {string} url
+ * 
+ * @todo: Add description.
+ */
+scope.addPageBreak = (url) => {
+  const pageBreak = document.createElement('div')
+  pageBreak.setAttribute('class', 'page-break')
+  pageBreak.setAttribute('title', url)
+  pageBreak.innerHTML = `
+    Navigated to ${url}
+  `
+  scope.domRequestList.prepend(pageBreak)
+}
+
+chrome.devtools.network.onNavigated.addListener(url => {
   if (!scope.preserveLog) {
     scope.clearRequestList()
+  } else {
+    // scope.addPageBreak(url)
   }
 })
 
