@@ -28,6 +28,10 @@ $spacingSm: 16px;
 $spacingMd: 32px;
 $spacingLg: 48px;
 
+.hidden {
+  display: none;
+}
+
 body {
   background-color: #fffaf0;
   color: $colorFontDark;
@@ -37,11 +41,23 @@ body {
 .wrapper {
   margin-left: auto;
   margin-right: auto;
-  max-width: 960px;
+  max-width: $bodyMaxWidth;
 }
 
-.hidden {
-  display: none;
+.listening {
+  font-size: medium;
+  margin-top: calc(#{$navHeight} * #{2});
+  opacity: 0.67;
+  text-align: center;
+
+  img {
+    margin-top: $spacingXs;
+    max-width: 64px;
+  }
+}
+
+.request-list {
+  margin-top: calc(#{$navHeight} + #{$spacingXs});
 }
 
 .linkbtn {
@@ -64,24 +80,7 @@ body {
   }
 }
 
-.listening {
-  font-size: medium;
-  margin-top: calc(#{$navHeight} * #{2});
-  opacity: 0.67;
-  text-align: center;
-
-  img {
-    margin-top: $spacingXs;
-    max-width: 64px;
-  }
-}
-
-.request-list {
-  margin-top: calc(#{$navHeight} + #{$spacingXs});
-}
-
 .highlight {
-  background-color: transparent;
   color: $colorBlack;
   font-weight: bold;
 
@@ -108,19 +107,6 @@ body {
 
 mark {
   background-color: $colorBackgroundActive;
-}
-
-.author-contribution {
-  font-size: xx-small;
-  opacity: 0.5;
-
-  summary {
-    outline-color: $colorTeal;
-  }
-
-  a {
-    color: $colorFontDark;
-  }
 }
 
 .shadow {
