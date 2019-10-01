@@ -41,31 +41,56 @@
     margin-top: 0;
   }
 
-  .settings-item {
-    display: flex;
+  .settings-list {
+    border-bottom: 1px solid $colorFontDark;
+    padding-bottom: $spacingSm;
 
-    .settings-item-name {
-      align-items: center;
+    .settings-item {
       display: flex;
-      flex: 2;
-      padding-left: $spacingXs;
+  
+      .settings-item-name {
+        align-items: center;
+        display: flex;
+        flex: 2;
+        padding-left: $spacingXs;
+      }
+  
+      .settings-item-value {
+        align-items: center;
+        display: flex;
+        flex: 3;
+        padding-left: $spacingXs;
+      }
+  
+      .filter-google-analytics,
+      .filter-tealium-iq {
+        color: $colorTeal;
+        font-size: medium;
+        text-decoration: none;
+  
+        .hidden {
+          display: none;
+        }
+      }
     }
+  }
 
-    .settings-item-value {
-      align-items: center;
-      display: flex;
-      flex: 3;
-      padding-left: $spacingXs;
-    }
+  .author-contribution {
+    font-size: x-small;
+    margin-top: $spacingSm;
+    opacity: 0.5;
+    
+    p {
+      margin: 0;
+      margin-top: $spacingXxs;
 
-    .filter-google-analytics,
-    .filter-tealium-iq {
-      color: $colorTeal;
-      font-size: medium;
-      text-decoration: none;
+      &:first-child {
+        font-weight: bold;
+        margin-top: 0;
+      }
 
-      .hidden {
-        display: none;
+      a {
+        color: $colorFontDark;
       }
     }
   }
