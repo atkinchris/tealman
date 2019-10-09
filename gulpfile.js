@@ -31,6 +31,8 @@ const paths = {
   },
   scripts: {
     src: [
+      `${directories.srcPanel}/scripts/GoogleAnalytics.js`,
+      `${directories.srcPanel}/scripts/TealiumIQ.js`,
       `${directories.srcPanel}/scripts/RequestFilter.js`,
       `${directories.srcPanel}/scripts/Request.js`,
       `${directories.srcPanel}/scripts/index.js`

@@ -51,7 +51,7 @@ class Request {
    * Extracts Google Analytics specific variables.
    */
   setGoogleAnalyticsVariables () {
-    if (this.origin === 'Google Analytics') {
+    if (this.origin === GoogleAnalytics.getOrigin()) {
       const hitType = this.getDataVariable('Hit Type')
       this.type = hitType.toLowerCase().replace(/^\w/, firstCharacter => firstCharacter.toUpperCase())
 
@@ -64,7 +64,7 @@ class Request {
    * Extracts Tealium iQ specific variables.
    */
   setTealiumIqVariables () {
-    if (this.origin === 'Tealium iQ') {
+    if (this.origin === TealiumIQ.getOrigin()) {
       const hitType = this.getDataVariable('tealium_event')
       this.type = hitType.toLowerCase() === 'view' ? 'Pageview' : 'Event'
 
@@ -133,9 +133,9 @@ class Request {
       <span class="request-type">${this.type}</span>
       <span class="request-origin">${this.origin}</span>
       ${
-        (this.origin === 'Google Analytics')
+        (this.origin === GoogleAnalytics.getOrigin())
           ? ['<span>', this.gaTrackingId, '</span>'].join('')
-          : (this.origin === 'Tealium iQ')
+          : (this.origin === TealiumIQ.getOrigin())
             ? ['<span>', this.tiqProfile, ' / ', this.tiqEnvironment, '</span>'].join('')
             : ''
       }
@@ -165,7 +165,7 @@ class Request {
     body.innerHTML = `
       <div class="request-data">
         ${this.data.reduce((accumulator, row) => {
-          if (this.origin === 'Tealium iQ') {
+          if (this.origin === TealiumIQ.getOrigin()) {
             row.name = (/^cp./.test(row.name)) 
               ? row.name.replace(/^cp./, this.highlightText('cp.', 'cookie')) : row.name
             row.name = (/^dom./.test(row.name))
