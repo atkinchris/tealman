@@ -18,110 +18,9 @@ const scope = {
   requestList: []
 }
 
-/**
- * @see {@link https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters|Measurement Protocol Parameter Reference}
- */
-scope.googleAnalyticsParameterMap = {
-  aid: 'Application ID',
-  aip: 'Anonymize IP',
-  an: 'Application Name',
-  av: 'Application Version',
-  cc: 'Campaign Content',
-  ci: 'Campaign ID',
-  cid: 'Client ID',
-  ck: 'Campaign Keyword',
-  cm: 'Campaign Medium',
-  cn: 'Campaign Name',
-  cs: 'Campaign Source',
-  cu: 'Currency Code',
-  de: 'Document Encoding',
-  dh: 'Document Host Name',
-  dl: 'Document Location URL',
-  dp: 'Document Path',
-  dr: 'Document Referrer',
-  dt: 'Document Title',
-  ea: 'Event Action',
-  ec: 'Event Category',
-  el: 'Event Label',
-  ev: 'Event Value',
-  fl: 'Flash Version',
-  ic: 'Item Code',
-  in: 'Item Name',
-  ip: 'Item Price',
-  iq: 'Item Quantity',
-  je: 'Java Enabled',
-  sd: 'Screen Colors',
-  sr: 'Screen Resolution',
-  t: 'Hit Type',
-  ti: 'Transaction ID',
-  tid: 'Tracking ID',
-  tr: 'Transaction Revenue',
-  ts: 'Transaction Shipping',
-  tt: 'Transaction Tax',
-  uid: 'User ID',
-  ul: 'User Language',
-  v: 'Protocol Version',
-  vp: 'Viewport Size',
-  z: 'Cache Buster'
-}
-
-/**
- * @param {object} req
- * @returns {object|null}
- * 
- * Parses Google Analytics payload into JSON.
- */
-scope.parseGoogleAnalyticsData = req => {
-  let data = null
-  if (req && req.request && req.request.method) {
-    data = {}
-    const method = req.request.method.trim().toLowerCase()
-    if (method === 'get' && req.request.queryString) {
-      req.request.queryString.forEach(parameter => {
-        data[`${decodeURIComponent(parameter.name)}`] = decodeURIComponent(parameter.value)
-      })
-    } else if (method === 'post' && req.request.postData && req.request.postData.text) {
-      req.request.postData.text.split('&')
-        .forEach(text => {
-          const textSplit = text.split('=')
-          data[`${decodeURIComponent(textSplit[0])}`] = `${decodeURIComponent(textSplit[1])}`
-        })
-    }
-  }
-  Object.keys(data)
-    .forEach(name => {
-      const map = scope.googleAnalyticsParameterMap[name]
-      if (map) {
-        data[map] = data[name]
-        delete data[name]
-      } else if (/^cd\d+/.test(name)) {
-        data[name.replace(/^cd/, 'Custom Dimension ')] = data[name]
-        delete data[name]
-      }
-    })
-  return data
-}
-
-/**
- * @param {object} req
- * @returns {object|null}
- * 
- * Parses Tealium iQ payload into JSON.
- */
-scope.parseTealiumIqData = req => {
-  let data = null
-  if (req && req.request && req.request.postData && req.request.postData.text) {
-    const text = req.request.postData.text
-    const start = text.indexOf('{')
-    const end = text.lastIndexOf('}') + 1
-    data = JSON.parse(text.substring(start, end)).data
-  }
-  return data
-}
-
 scope.requestFilterList = [
-  new RequestFilter('Google Analytics', /google\-analytics\.com\/(r\/)?collect/, scope.parseGoogleAnalyticsData, true),
-  new RequestFilter('Tealium iQ', /tealiumiq\.com(.*)\/i\.gif/, scope.parseTealiumIqData, true)
+  new RequestFilter(GoogleAnalytics.getOrigin(), GoogleAnalytics.getUrlPattern(), GoogleAnalytics.parseData, true),
+  new RequestFilter(TealiumIQ.getOrigin(), TealiumIQ.getUrlPattern(), TealiumIQ.parseData, true)
 ]
 
 /**
@@ -263,7 +162,7 @@ scope.domShadow.addEventListener('click', event => {
 scope.domCheckboxFilterGoogleAnalytics.addEventListener('click', event => {
   event.preventDefault()
   scope.requestFilterList
-    .find(filter => filter.origin === 'Google Analytics')
+    .find(filter => filter.origin === GoogleAnalytics.getOrigin())
     .toggleActive()
   scope.domCheckboxFilterGoogleAnalytics.querySelectorAll('i')
     .forEach(icon => icon.classList.toggle('hidden'))
@@ -275,7 +174,7 @@ scope.domCheckboxFilterGoogleAnalytics.addEventListener('click', event => {
 scope.domCheckboxFilterTealiumIq.addEventListener('click', event => {
   event.preventDefault()
   scope.requestFilterList
-    .find(filter => filter.origin === 'Tealium iQ')
+    .find(filter => filter.origin === TealiumIQ.getOrigin())
     .toggleActive()
   scope.domCheckboxFilterTealiumIq.querySelectorAll('i')
     .forEach(icon => icon.classList.toggle('hidden'))
