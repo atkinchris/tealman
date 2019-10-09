@@ -14,7 +14,7 @@ const scope = {
   keywordHighlighter: new Mark('.request-list'), /* @todo: Review context. */
   keywordHighlighterTarget: [],
   navHeight: document.querySelector('nav').getBoundingClientRect().height,
-  preserveLog: false,
+  preserveLog: true,
   requestList: []
 }
 
