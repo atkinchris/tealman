@@ -52,10 +52,10 @@ class Request {
    */
   setGoogleAnalyticsVariables () {
     if (this.origin === GoogleAnalytics.getOrigin()) {
-      const hitType = this.getDataVariable('Hit Type')
+      const hitType = this.getDataVariable(GoogleAnalytics.getHitTypeParameterName())
       this.type = hitType.toLowerCase().replace(/^\w/, firstCharacter => firstCharacter.toUpperCase())
 
-      this.gaTrackingId = this.getDataVariable('Tracking ID')
+      this.gaTrackingId = this.getDataVariable(GoogleAnalytics.getTrackingIdParameterName())
     }
   }
 
@@ -65,11 +65,11 @@ class Request {
    */
   setTealiumIqVariables () {
     if (this.origin === TealiumIQ.getOrigin()) {
-      const hitType = this.getDataVariable('tealium_event')
+      const hitType = this.getDataVariable(TealiumIQ.getHitTypeParameterName())
       this.type = hitType.toLowerCase() === 'view' ? 'Pageview' : 'Event'
 
-      this.tiqProfile = this.getDataVariable('tealium_profile')
-      this.tiqEnvironment = this.getDataVariable('tealium_environment')
+      this.tiqProfile = this.getDataVariable(TealiumIQ.getProfileParameterName())
+      this.tiqEnvironment = this.getDataVariable(TealiumIQ.getEnvironmentParameterName())
     }
   }
 
@@ -157,6 +157,12 @@ class Request {
         document.querySelectorAll('.request.active')
           .forEach(active => active.classList.remove('active'))
         reqContainer.classList.add('active')
+
+        const navHeight = document.querySelector('nav').getBoundingClientRect().height
+        scroll({
+          behavior: 'auto',
+          top: reqContainer.offsetTop - (navHeight * 1.1)
+        })
       }
     })
 
@@ -179,6 +185,8 @@ class Request {
           return accumulator + `
             <div class="request-data-row">
               <div class="request-data-row-name">${row.name}</div>
+              ${(this.origin === TealiumIQ.getOrigin())
+                ? `<div class="request-data-row-type">${typeof row.value}</div>` : ''}
               <div class="request-data-row-value">${row.value}</div>
             </div>
           `

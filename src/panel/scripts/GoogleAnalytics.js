@@ -14,6 +14,20 @@ class GoogleAnalytics {
   }
 
   /**
+   * @returns {string}
+   */
+  static getHitTypeParameterName () {
+    return GoogleAnalytics.getParameterMap().t
+  }
+
+  /**
+   * @returns {string}
+   */
+  static getTrackingIdParameterName () {
+    return GoogleAnalytics.getParameterMap().tid
+  }
+
+  /**
    * @returns {object}
    * @see {@link https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters|Measurement Protocol Parameter Reference}
    */
