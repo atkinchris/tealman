@@ -41,8 +41,15 @@
       padding: calc(#{$spacingXxs} * #{1.5});
 
       .request-data-row-name {
+        flex: 2;
+        overflow: hidden;
+        word-wrap: break-word;
+      }
+
+      .request-data-row-type {
         flex: 1;
         overflow: hidden;
+        padding-left: $spacingSm;
         word-wrap: break-word;
       }
 

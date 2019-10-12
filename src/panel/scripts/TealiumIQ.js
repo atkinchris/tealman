@@ -14,6 +14,27 @@ class TealiumIQ {
   }
 
   /**
+   * @returns {string}
+   */
+  static getHitTypeParameterName () {
+    return 'tealium_event'
+  }
+
+  /**
+   * @returns {string}
+   */
+  static getProfileParameterName () {
+    return 'tealium_profile'
+  }
+
+  /**
+   * @returns {string}
+   */
+  static getEnvironmentParameterName () {
+    return 'tealium_environment'
+  }
+
+  /**
    * @param {object} req
    * @returns {object|null}
    * 
