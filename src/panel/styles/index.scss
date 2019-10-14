@@ -80,6 +80,18 @@ body {
   }
 }
 
+.page-break {
+  background-color: $colorFontDark;
+  border-radius: $borderRadius;
+  color: $colorFontLight;
+  margin-bottom: $spacingXs;
+  opacity: 0.5;
+  overflow: hidden;
+  padding: $spacingXs;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .highlight {
   color: $colorBlack;
   font-weight: bold;
