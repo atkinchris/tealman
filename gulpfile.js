@@ -71,6 +71,11 @@ function html () {
     .pipe(gulp.dest(paths.html.dest))
 }
 
+function copyImages () {
+  return gulp.src(`${directories.srcPanel}/images/*png`)
+    .pipe(gulp.dest(`${directories.build}/panel`))
+}
+
 function styles () {
   return gulp.src(paths.styles.src)
     .pipe(gulpSass())
@@ -96,7 +101,7 @@ function scripts () {
     .pipe(gulp.dest(paths.scripts.dest))
 }
 
-const taskBuild = gulp.series(taskClean, copyRootAssets, html, styles, copyVendorScripts, scripts)
+const taskBuild = gulp.series(taskClean, copyRootAssets, html, copyImages, styles, copyVendorScripts, scripts)
 
 function taskWatch () {
   return gulp.watch(`${directories.srcPanel}/**/*`, taskBuild)

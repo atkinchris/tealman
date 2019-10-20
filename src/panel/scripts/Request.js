@@ -9,6 +9,7 @@ class Request {
     this.id = id
     this.origin = origin
     this.data = this.sortData(data)
+    this.icon = ''
 
     this.setGoogleAnalyticsVariables()
     this.setTealiumIqVariables()
@@ -56,6 +57,8 @@ class Request {
       this.type = hitType.toLowerCase().replace(/^\w/, firstCharacter => firstCharacter.toUpperCase())
 
       this.gaTrackingId = this.getDataVariable(GoogleAnalytics.getTrackingIdParameterName())
+
+      this.icon = this.icon = '<img src="google-analytics.png" alt="">'
     }
   }
 
@@ -70,6 +73,8 @@ class Request {
 
       this.tiqProfile = this.getDataVariable(TealiumIQ.getProfileParameterName())
       this.tiqEnvironment = this.getDataVariable(TealiumIQ.getEnvironmentParameterName())
+
+      this.icon = '<img src="tealium.png" alt="">'
     }
   }
 
@@ -131,7 +136,7 @@ class Request {
     link.innerHTML = `
       <span class="request-id">${this.id}</span>
       <span class="request-type">${this.type}</span>
-      <span class="request-origin">${this.origin}</span>
+      <span class="request-origin">${[this.icon, this.origin].join('')}</span>
       ${
         (this.origin === GoogleAnalytics.getOrigin())
           ? ['<span>', this.gaTrackingId, '</span>'].join('')
