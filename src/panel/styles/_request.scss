@@ -3,6 +3,7 @@
   margin-bottom: $spacingXs;
 
   .request-link {
+    align-items: center;
     display: flex;
     font-weight: normal;
 
@@ -17,6 +18,13 @@
 
       &.request-type {
         flex: 2;
+      }
+    }
+
+    .request-origin {
+      img {
+        margin-right: $spacingXs;
+        vertical-align: middle;
       }
     }
 

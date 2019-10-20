@@ -7,9 +7,10 @@
   "manifest_version": 2,
   "name": "Tealman",
   "permissions": [
+    "storage",
     "tabs"
   ],
-  "version": "2.0.7",
+  "version": "2.1.1",
   "browser_action": {
     "default_icon": "icon-128.png"
   }
