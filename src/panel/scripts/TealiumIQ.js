@@ -17,21 +17,21 @@ class TealiumIQ {
    * @returns {string}
    */
   static getHitTypeParameterName () {
-    return 'tealium_event'
+    return 'ut.event'
   }
 
   /**
    * @returns {string}
    */
   static getProfileParameterName () {
-    return 'tealium_profile'
+    return 'ut.profile'
   }
 
   /**
    * @returns {string}
    */
   static getEnvironmentParameterName () {
-    return 'tealium_environment'
+    return 'ut.env'
   }
 
   /**
