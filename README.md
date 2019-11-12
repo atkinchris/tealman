@@ -2,5 +2,4 @@
 
 ### What's on the roadmap?
 * Search next/previous
-* utag.view/utag.link logging
 * Tealium iQ data layer view
