@@ -6,7 +6,9 @@ contentScript.text = `
   function decorateWithLogging (fn, logMessagePrefix = '') {
     return function () {
       const message = {...arguments[0]}
-      console.log('[Tealman]', logMessagePrefix, message)
+      console.group('[Tealman]', logMessagePrefix)
+      console.log(message)
+      console.groupEnd()
       const result = fn.apply(this, arguments)
       return result
     }

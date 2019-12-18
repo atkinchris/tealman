@@ -14,11 +14,10 @@
     "analytics",
     "debug",
     "google",
-    "google",
-    "analytics",
+    "google analytics",
     "tealium",
-    "tealium",
-    "iq"
+    "tealium iq",
+    "tiq"
   ],
   "author": "Mustafa Temel",
   "license": "ISC",
