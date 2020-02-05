@@ -60,7 +60,8 @@ function copyRootAssets () {
     `${directories.src}/devtoolspage.html`,
     `${directories.src}/devtoolspage.js`,
     `${directories.src}/icon-128.png`,
-    `${directories.src}/manifest.json`
+    `${directories.src}/manifest.json`,
+    `${directories.src}/utagviewandlinkwithlogging.js`
   ]).pipe(gulp.dest(directories.build))
 }
 
