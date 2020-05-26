@@ -63,9 +63,7 @@ scope.addPageBreak = (url) => {
   const pageBreak = document.createElement('div')
   pageBreak.setAttribute('class', 'page-break')
   pageBreak.setAttribute('title', url)
-  pageBreak.innerHTML = `
-    Navigated to ${url}
-  `
+  pageBreak.innerHTML = `Navigated to ${url}`
   scope.domRequestList.appendChild(pageBreak)
 }
 
@@ -155,6 +153,7 @@ scope.domShadow.addEventListener('click', event => {
 
 /**
  * Handles filtering/not-filtering of Google Analytics requests.
+ * @todo: Look for a common logic for filtering/not-filtering requests from different origins.
  */
 scope.domCheckboxFilterGoogleAnalytics.addEventListener('click', event => {
   event.preventDefault()
@@ -167,6 +166,7 @@ scope.domCheckboxFilterGoogleAnalytics.addEventListener('click', event => {
 
 /**
  * Handles filtering/not-filtering of Tealium iQ requests.
+ * @todo: Look for a common logic for filtering/not-filtering requests from different origins.
  */
 scope.domCheckboxFilterTealiumIq.addEventListener('click', event => {
   event.preventDefault()

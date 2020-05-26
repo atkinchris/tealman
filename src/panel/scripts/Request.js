@@ -58,7 +58,7 @@ class Request {
 
       this.gaTrackingId = this.getDataVariable(GoogleAnalytics.getTrackingIdParameterName())
 
-      this.icon = this.icon = '<img src="google-analytics.png" alt="">'
+      this.icon = this.icon = '<img src="google-analytics.png" alt="GA">'
     }
   }
 
@@ -74,7 +74,7 @@ class Request {
       this.tiqProfile = this.getDataVariable(TealiumIQ.getProfileParameterName())
       this.tiqEnvironment = this.getDataVariable(TealiumIQ.getEnvironmentParameterName())
 
-      this.icon = '<img src="tealium.png" alt="">'
+      this.icon = '<img src="tealium.png" alt="TiQ">'
     }
   }
 
@@ -110,7 +110,7 @@ class Request {
    * @returns {string}
    * 
    * Wraps given string in a <span> element with class 'highlight'.
-   * If className is specified, it is add to the class list of the span element.
+   * If className is specified, it is added to the class list of the span element.
    */
   highlightText (text, className) {
     return `<span class="highlight${(className) ? [' highlight-', className].join('') : ''}">${text}</span>`
@@ -137,7 +137,7 @@ class Request {
       <span class="request-id">${this.id}</span>
       <span class="request-type">${this.type}</span>
       <span class="request-origin">${[this.icon, this.origin].join('')}</span>
-      ${
+      ${ /* @todo: Make following block generic. */
         (this.origin === GoogleAnalytics.getOrigin())
           ? ['<span>', this.gaTrackingId, '</span>'].join('')
           : (this.origin === TealiumIQ.getOrigin())
@@ -176,7 +176,7 @@ class Request {
     body.innerHTML = `
       <div class="request-data">
         ${this.data.reduce((accumulator, row) => {
-          if (this.origin === TealiumIQ.getOrigin()) {
+          if (this.origin === TealiumIQ.getOrigin()) { /* @todo: Move this block to class TealiumIQ. */
             row.name = (/^cp./.test(row.name)) 
               ? row.name.replace(/^cp./, this.highlightText('cp.', 'cookie')) : row.name
             row.name = (/^dom./.test(row.name))
@@ -198,6 +198,11 @@ class Request {
         }, '')}
       </div>
     `
+    
+    // @todo: Move.
+    if (this.origin === GoogleAnalytics.getOrigin()) {
+      body.innerHTML = GoogleAnalytics.html
+    }
 
     header.appendChild(link)
     container.appendChild(header)
