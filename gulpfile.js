@@ -11,110 +11,85 @@ const gulpSass = require('gulp-sass')
 const gulpUglify = require('gulp-uglify')
 const gulpZip = require('gulp-zip')
 
-const directories = {
-  build: 'build',
-  buildPanel: 'build/panel',
-  dist: 'dist',
-  src: 'src',
-  srcPanel: 'src/panel'
-}
-const paths = {
-  html: {
-    src: `${directories.srcPanel}/index.html`,
-    output: 'index.html',
-    dest: directories.buildPanel
-  },
-  styles: {
-    src: `${directories.srcPanel}/styles/*.scss`,
-    output: 'bundle.css',
-    dest: directories.buildPanel
-  },
-  scripts: {
-    src: [
-      `${directories.srcPanel}/scripts/GoogleAnalytics.js`,
-      `${directories.srcPanel}/scripts/TealiumIQ.js`,
-      `${directories.srcPanel}/scripts/RequestFilter.js`,
-      `${directories.srcPanel}/scripts/Request.js`,
-      `${directories.srcPanel}/scripts/index.js`
-    ],
-    output: 'bundle.js',
-    dest: directories.buildPanel,
-    vendors: {
-      src: `${directories.srcPanel}/scripts/vendors/*.js`,
-      output: 'vendors.js',
-      dest: directories.buildPanel
-    }
-  },
-  releaseOutput: 'tealman.zip'
-}
-
 function taskClean () {
-  return del([
-    `${directories.build}/*`,
-    `${directories.dist}/*`
-  ])
+  return del(['build/*', 'dist/*'])
 }
 
-function copyRootAssets () {
-  return gulp.src([
-    `${directories.src}/devtoolspage.html`,
-    `${directories.src}/devtoolspage.js`,
-    `${directories.src}/icon-128.png`,
-    `${directories.src}/manifest.json`,
-    `${directories.src}/utagviewandlinkwithlogging.js`
-  ]).pipe(gulp.dest(directories.build))
+function taskManifest () {
+  return gulp.src('src/manifest.json')
+    .pipe(gulp.dest('build'))
 }
 
-function html () {
-  return gulp.src(paths.html.src)
+function taskDevTools () {
+  return gulp.src('src/devtools/*')
+    .pipe(gulp.dest('build/devtools'))
+}
+
+function taskHtml () {
+  return gulp.src('src/panel/index.html')
     .pipe(gulpHtmlmin({collapseWhitespace: true}))
-    .pipe(gulpRename(paths.html.output))
-    .pipe(gulp.dest(paths.html.dest))
+    .pipe(gulpRename('index.html'))
+    .pipe(gulp.dest('build/panel'))
 }
 
-function copyImages () {
-  return gulp.src(`${directories.srcPanel}/images/*png`)
-    .pipe(gulp.dest(`${directories.build}/panel`))
-}
-
-function styles () {
-  return gulp.src(paths.styles.src)
+function taskStyles () {
+  return gulp.src('src/panel/styles/*.scss')
     .pipe(gulpSass())
     .pipe(gulpPostcss([autoprefixer(), cssnano()]))
-    .pipe(gulpRename(paths.styles.output))
-    .pipe(gulp.dest(paths.styles.dest))
+    .pipe(gulpRename('bundle.css'))
+    .pipe(gulp.dest('build/panel'))
 }
 
-function copyVendorScripts () {
-  return gulp.src(paths.scripts.vendors.src)
+function taskVendorScripts () {
+  return gulp.src('src/panel/scripts/vendors/*.js')
     .pipe(gulpUglify())
-    .pipe(gulpConcat(paths.scripts.vendors.output))
-    .pipe(gulp.dest(paths.scripts.vendors.dest))
+    .pipe(gulpConcat('vendors.js'))
+    .pipe(gulp.dest('build/panel'))
 }
 
-function scripts () {
-  return gulp.src(paths.scripts.src)
+function taskScripts () {
+  return gulp.src(['src/panel/scripts/index.js'])
     .pipe(gulpBabel({
       presets: ['@babel/preset-env']
     }))
     .pipe(gulpUglify())
-    .pipe(gulpConcat(paths.scripts.output))
-    .pipe(gulp.dest(paths.scripts.dest))
+    .pipe(gulpConcat('bundle.js'))
+    .pipe(gulp.dest('build/panel'))
 }
 
-const taskBuild = gulp.series(taskClean, copyRootAssets, html, copyImages, styles, copyVendorScripts, scripts)
+function taskContentScripts () {
+  return gulp.src('src/content-scripts/*.js')
+    .pipe(gulp.dest('build/content-scripts'))
+}
+
+function taskImages () {
+  return gulp.src('src/images/*')
+    .pipe(gulp.dest('build/images'))
+}
+
+const taskBuild = gulp.series(
+  taskClean,
+  taskManifest,
+  taskDevTools,
+  taskHtml,
+  taskStyles,
+  taskVendorScripts,
+  taskScripts,
+  taskContentScripts,
+  taskImages
+)
 
 function taskWatch () {
-  return gulp.watch(`${directories.srcPanel}/**/*`, taskBuild)
+  return gulp.watch('src/**/*', taskBuild)
 }
 
-function zip () {
-  return gulp.src(`${directories.build}/**/*`)
-    .pipe(gulpZip(paths.releaseOutput))
-    .pipe(gulp.dest(directories.dist))
+function taskZip () {
+  return gulp.src('build/**/*')
+    .pipe(gulpZip('tealman.zip'))
+    .pipe(gulp.dest('dist'))
 }
 
-const taskRelease = gulp.series(taskBuild, zip)
+const taskRelease = gulp.series(taskBuild, taskZip)
 
 exports.clean = taskClean
 exports.build = taskBuild
