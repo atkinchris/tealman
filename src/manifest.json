@@ -1,14 +1,15 @@
 {
   "description": "Extends Chrome DevTools to capture data sent to Google Analytics and Tealium iQ.",
-  "devtools_page": "devtoolspage.html",
+  "devtools_page": "devtools/devtools.html",
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["utagviewandlinkwithlogging.js"]
+      "js": ["content-scripts/utagviewandlinkwithlogging.js"],
+      "run_at": "document_start"
     }
   ],
   "icons": {
-    "128": "icon-128.png"
+    "128": "images/icon-128.png"
   },
   "manifest_version": 2,
   "name": "Tealman",
@@ -16,5 +17,5 @@
     "storage",
     "tabs"
   ],
-  "version": "2.1.4"
+  "version": "3.0.0"
 }
