@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="author" content="Mustafa Temel">
+      <meta name="description" content="Extends Chrome DevTools to capture data sent to Google Analytics and Tealium iQ.">
+      <meta name="keywords" content="analytics, debug, google, google analytics, qa, tealium, tealium iq, tiq, universal analytics">
+      <title>Tealman</title>
+      <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="bundle.css">
+      <script src="vendors.js"></script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <nav>
+        <div class="nav-item">
+          <a href="#" class="iconbtn iconbtn-light" id="navbtn-preserve" title="Preserve log">
+            <i class="fas fa-square hidden"></i>
+            <i class="fas fa-check-square"></i>
+            Preserve log
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#" class="iconbtn iconbtn-light" id="navbtn-clear" title="Clear all requests">
+            <i class="fas fa-trash-alt"></i>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#" class="iconbtn iconbtn-light" id="navbtn-settings" title="Settings">
+            <i class="fas fa-cog"></i>
+          </a>
+        </div>
+      </nav>
+      <div class="request-list"></div>
+      <div class="shadow hidden"></div>
+      <div class="settings-lightbox hidden">
+      </div>
+    </div>
+    <script src="bundle.js"></script>
+  </body>
+</html>

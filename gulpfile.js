@@ -48,8 +48,16 @@ function taskVendorScripts () {
 }
 
 function taskScripts () {
-  return gulp.src(['src/panel/scripts/index.js'])
+  return gulp.src([
+      'src/panel/scripts/Utils.js',
+      'src/panel/scripts/Hit.js',
+      'src/panel/scripts/GoogleAnalytics.js',
+      'src/panel/scripts/TealiumIQ.js',
+      'src/panel/scripts/RequestFilter.js',
+      'src/panel/scripts/index.js'
+    ])
     .pipe(gulpBabel({
+      plugins: ['@babel/plugin-proposal-class-properties'],
       presets: ['@babel/preset-env']
     }))
     .pipe(gulpUglify())

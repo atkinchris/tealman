@@ -1,0 +1,42 @@
+$bodyMaxWidth: 960px;
+
+$borderRadius: 4px;
+$borderWidth: 1px;
+
+$color1: #0d7e83;
+$color2: #ffce00;
+$colorFont: #262626;
+$colorIconBtn: $color1;
+$colorIconBtnHover: darken($color1, 10%);
+$colorIconBtnDark: $colorFont;
+$colorIconBtnDarkHover: darken($colorIconBtnDark, 10%);
+$colorIconBtnLight: #ffffff;
+$colorIconBtnLightHover: darken($colorIconBtnLight, 10%);
+
+$fontFamily: 'Roboto', sans-serif;
+$fontWeight: 300;
+$fontWeightBold: 500;
+
+$spacingXxs: 4px;
+$spacingXs: 8px;
+$spacingSm: 16px;
+$spacingMd: 32px;
+$spacingLg: 48px;
+
+body {
+  color: $colorFont;
+  font-family: $fontFamily;
+  font-weight: $fontWeight;
+}
+
+.wrapper {
+  max-width: $bodyMaxWidth;
+}
+
+.hidden {
+  display: none;
+}
+
+@import './button';
+@import './nav';
+@import './settings-lightbox';
