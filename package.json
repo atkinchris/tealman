@@ -2,7 +2,7 @@
   "name": "tealman",
   "version": "3.0.1",
   "description": "Extends Chrome DevTools to capture data sent to Google Analytics and Tealium iQ.",
-  "main": "src/panel/index.js",
+  "main": "src/manifest.json",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
