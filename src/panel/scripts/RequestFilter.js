@@ -4,9 +4,9 @@ class RequestFilter {
    * @param {string} origin
    * @param {string} urlPattern
    * @param {function} parseData
-   * @param {boolean} active
+   * @param {boolean} [active]
    */
-  constructor (origin, urlPattern, parseData, active) {
+  constructor (origin, urlPattern, parseData, active = true) {
     this.origin = origin
     this.urlPattern = urlPattern
     this.parseData = parseData
@@ -14,8 +14,26 @@ class RequestFilter {
   }
 
   /**
+   * @returns {string}
+   *
+   * Accessor for the {origin} property.
+   */
+  getOrigin () {
+    return this.origin
+  }
+
+  /**
+   * @returns {object}
+   *
+   * Accessor for the {urlPattern} property.
+   */
+  getUrlPattern () {
+    return this.urlPattern
+  }
+
+  /**
    * @returns {boolean}
-   * 
+   *
    * Returns whether this RequestFilter is active.
    */
   isActive () {
@@ -23,8 +41,6 @@ class RequestFilter {
   }
 
   /**
-   * @param {boolean} active
-   * 
    * Toggler for the {active} property.
    */
   toggleActive () {
