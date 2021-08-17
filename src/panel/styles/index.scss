@@ -1,26 +1,30 @@
 $bodyMaxWidth: 960px;
-$bodyMinWidth: 480px;
+$bodyMinWidth: 400px;
 
-$borderRadius: 4px;
+$borderRadius: 3px;
 $borderWidth: 1px;
 
-$breakpointSm: 400px;
 $breakpointMd: 720px;
 
-$colorBackgroundActive: #ffce00;
-$colorBackgroundLight: #fff;
-$colorBackgroundLightHover: #e6e6e6;
-$colorBlack: #000;
-$colorBorderActive: #d2b92b;
-$colorBorderLight: #ccc;
-$colorBorderLightHover: #adadad;
-$colorFontDark: #222;
-$colorFontLight: #fff;
-$colorTeal: #0d7e83;
+$color1: #0d7e83;
+$color2: #ffce00;
+$colorBackgroundLight: #ffffff;
+$colorBorder: #aeaeae;
+$colorFont: #0d0d0d;
+$colorIconBtn: $color1;
+$colorIconBtnHover: darken($colorIconBtn, 10%);
+$colorIconBtnDark: #4c4c4c;
+$colorIconBtnDarkHover: darken($colorIconBtnDark, 10%);
+$colorIconBtnLight: #ffffff;
+$colorIconBtnLightHover: darken($colorIconBtnLight, 10%);
+$colorTableCaption: #95b0b2;
+$colorTableRow: darken($colorBackgroundLight, 10%);
 
-$fontFamily: sans-serif;
+$fontFamily: 'Roboto', sans-serif;
+$fontWeight: 300;
+$fontWeightBold: 500;
 
-$navHeight: 45px;
+$navHeight: 30px; /* 🐒 patch */
 
 $spacingXxs: 4px;
 $spacingXs: 8px;
@@ -28,117 +32,41 @@ $spacingSm: 16px;
 $spacingMd: 32px;
 $spacingLg: 48px;
 
-.hidden {
-  display: none;
-}
-
 body {
-  background-color: #fffaf0;
-  color: $colorFontDark;
+  background-color: $colorBackgroundLight;
+  color: $colorFont;
   font-family: $fontFamily;
+  font-weight: $fontWeight;
 }
 
 .wrapper {
   margin-left: auto;
   margin-right: auto;
   max-width: $bodyMaxWidth;
-}
-
-.listening {
-  display: none;
-  font-size: medium;
-  margin-top: calc(#{$navHeight} * #{2});
-  opacity: 0.67;
-  text-align: center;
-
-  img {
-    margin-top: $spacingXs;
-    max-width: 64px;
-  }
+  min-width: $bodyMinWidth;
 }
 
 .request-list {
-  margin-top: calc(#{$navHeight} + #{$spacingXs});
-}
-
-.linkbtn {
-  border: $borderWidth solid transparent;
-  border-radius: $borderRadius;
-  display: inline-block;
-  font-weight: bold;
-  padding: $spacingXs;
-  text-decoration: none;
-
-  &.linkbtn-light {
-    background-color: $colorBackgroundLight;
-    border-color: $colorBorderLight;
-    color: $colorFontDark;
-
-    &:hover {
-      background-color: $colorBackgroundLightHover;
-      border-color: $colorBorderLightHover;
-    }
-  }
+  margin-top: calc(#{$navHeight} + #{$spacingXs}); /* 🐒 patch */
 }
 
 .page-break {
-  background-color: $colorFontDark;
-  border-radius: $borderRadius;
-  color: $colorFontLight;
+  background-color: $colorFont;
+  border-radius: $borderRadius;;
+  color: $colorBackgroundLight;
   margin-bottom: $spacingXs;
-  opacity: 0.5;
+  opacity: .5;
   overflow: hidden;
   padding: $spacingXs;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.highlight {
-  color: $colorBlack;
-  font-weight: bold;
-
-  &.highlight-cookie {
-    color: #e7674b;
-  }
-
-  &.highlight-dom {
-    color: #915130;
-  }
-
-  &.highlight-javascript {
-    color: #2976ac;
-  }
-
-  &.highlight-meta {
-    color: #70bfda;
-  }
-
-  &.highlight-querystring {
-    color: #979749;
-  }
-}
-
-mark {
-  background-color: $colorBackgroundActive;
-}
-
-.shadow {
-  background-color: $colorFontDark;
+.hidden {
   display: none;
-  height: 100%;
-  left: 0;
-  opacity: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 2;
-
-  &.open {
-    display: block;
-    opacity: 0.5;
-  }
 }
 
+@import './button';
 @import './nav';
 @import './request';
-@import './settings-lightbox';
+@import './table';

@@ -17,7 +17,7 @@ class Request {
    *
    * Sorts data in alphabetical order.
    */
-   sortData (data) {
+  sortData (data) {
     const orderedData = []
     Object.keys(data)
       .sort()
@@ -32,12 +32,37 @@ class Request {
    * @param {string} name
    * @returns {string|null}
    */
-   getDataVariable (name) {
+  getDataVariable (name) {
     var value = null
     const searchResult = this.data.find(element => element.name === name)
     if (searchResult) {
       value = searchResult.value
     }
     return value
+  }
+
+  /**
+   * @returns {object}
+   */
+  createHeader () {
+    const details = document.createElement('details')
+    details.innerHTML = `
+      <summary>
+        <div class="request-header">
+          <div class="request-id">${this.id}</div>
+          <div class="request-type">${this.type}</div>
+          <div class="request-origin">${[this.icon, this.origin].join('')}</div>
+          <div class="request-account">${this.account}</div>
+          <div class="request-timestamp">${Utils.getTimestamp()}</div>
+          <div class="request-select">
+            <a href="#" class="iconbtn iconbtn-dark">
+              <i class="fas fa-square hidden"></i>
+              <i class="fas fa-check-square"></i>
+            </a>
+          </div>
+        </div>
+      </summary>
+    `
+    return details
   }
 }

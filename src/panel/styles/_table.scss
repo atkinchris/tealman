@@ -1,0 +1,21 @@
+table {
+  border-spacing: 0;
+  font-size: larger;
+  overflow-wrap: break-word;
+  table-layout: fixed;
+  width: 100%;
+
+  tr {
+    &:nth-child(even) {
+      background-color: $colorTableRow;
+    }
+
+    &:hover {
+      font-weight: $fontWeightBold;
+    }
+
+    td {
+      padding: $spacingXs;
+    }
+  }
+}

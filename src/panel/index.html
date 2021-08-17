@@ -4,94 +4,52 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Mustafa Temel">
-    <meta name="description" content="Extends Chrome DevTools to capture data sent to Google Analytics and Tealium iQ.">
-    <meta name="keywords" content="analytics, debug, google, google analytics, tealium, tealium iq">
+    <meta name="description" content="Extends Chrome DevTools to capture data sent to Adobe Analytics, Google Analytics and Tealium iQ.">
+    <meta name="keywords" content="adobe, adobe analytics, analytics, debug, ga, google, google analytics, tealium, tealium iq, universal analytics">
     <title>Tealman</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="bundle.css">
     <script src="vendors.js"></script>
   </head>
   <body>
     <div class="wrapper">
       <nav>
-        <div class="nav-left">
-          <div class="nav-ctrl nav-ctrl-search">
-            <input type="text" name="search-term" id="search-term" placeholder="Find string in payload">
-            <input type="text" name="search-results-count" id="search-results-count" disabled>
-          </div>
-        </div>
-        <div class="nav-right">
-          <div class="nav-ctrl nav-ctrl-preserve-log">
-            <a href="#" class="iconbtn" title="Preserve log">
-              <i class="fas fa-square hidden"></i>
-              <i class="fas fa-check-square"></i>
-              Preserve log
-            </a>
-          </div>
-          <div class="nav-ctrl nav-ctrl-clear">
-            <a href="#" class="iconbtn" title="Clear all requests">
-              <i class="fas fa-trash-alt"></i>
-            </a>
-          </div>
-          <div class="nav-ctrl nav-ctrl-settings">
-            <a href="#" class="iconbtn" title="Settings">
-              <i class="fas fa-cog"></i>
-            </a>
-          </div>
-        </div>
-      </nav>
-      <div class="listening">
-        Listening for requests...
-        <br>
-        <img src="../icon-128.png" alt="Icon">
-      </div>
-      <div class="request-list"></div>
-      <div class="shadow"></div>
-      <div class="settings-lightbox">
-        <div class="settings-close">
-          <a href="#" class="iconbtn" title="Close">
-            <i class="fa fa-times"></i>
+        <!-- @todo: Review order -->
+        <div class="nav-item">
+          <a href="#" class="iconbtn iconbtn-light" id="navbtn-preserve" title="Preserve log">
+            <i class="fas fa-square hidden"></i>
+            <i class="fas fa-check-square"></i>
+            Preserve log
           </a>
         </div>
-        <h2>Settings</h2>
-        <div class="settings-list">
-          <h3>Filter Requests</h3>
-          <div class="settings-item">
-            <div class="settings-item-name">Google Analytics</div>
-            <div class="settings-item-value">
-              <a href="#" class="filter-google-analytics" title="Filter Google Analytics requests">
-                <i class="far fa-square hidden"></i>
-                <i class="fas fa-check-square"></i>
-              </a>
-            </div>
-          </div>
-          <div class="settings-item">
-            <div class="settings-item-name">Tealium iQ</div>
-            <div class="settings-item-value">
-              <a href="#" class="filter-tealium-iq" title="Filter Tealium iQ requests">
-                <i class="far fa-square hidden"></i>
-                <i class="fas fa-check-square"></i>
-              </a>
-            </div>
-          </div>
+        <div class="nav-item">
+          <!-- @todo: Clear selected requests only -->
+          <a href="#" class="iconbtn iconbtn-light" id="navbtn-clear" title="Clear all requests">
+            <i class="fas fa-trash-alt"></i>
+          </a>
         </div>
-        <div class="author-contribution">
-          <p>
-            <span role="img" aria-label="Copyright">©️</span>
-            &#160;2020 Mustafa Temel
-          </p> 
-          <p>Credits</p>
-          <p>
-            <a href="https://www.flaticon.com/free-icon/kitty_763709" target="_blank">Icon</a>
-            &#160;made by&#160;
-            <a href="https://www.freepik.com" target="_blank">Freepik</a>
-            &#160;from&#160;
-            <a href="https://www.flaticon.com" target="_blank">www.flaticon.com</a>
-          </p>
-          <p>
-            <a href="https://markjs.io">mark.js</a>
-            &#160;made by Julian Kühnel
-          </p>
+        <div class="nav-item">
+          <a href="#" class="iconbtn iconbtn-light" id="navbtn-clipboard" title="Copy selected requests to clipboard">
+            <!-- @todo: Review icon -->
+            <i class="fas fa-clipboard"></i>
+          </a>
         </div>
+        <div class="nav-item">
+          <!-- @todo: Review title -->
+          <a href="#" class="iconbtn iconbtn-light" id="navbtn-export" title="Export selected requests">
+            <!-- @todo: Review icon -->
+            <i class="fas fa-file-download"></i>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="#" class="iconbtn iconbtn-light" id="navbtn-settings" title="Settings">
+            <i class="fas fa-cog"></i>
+          </a>
+        </div>
+      </nav>
+      <div class="request-list"></div>
+      <div class="shadow hidden"></div>
+      <div class="settings-lightbox hidden">
       </div>
     </div>
     <script src="bundle.js"></script>

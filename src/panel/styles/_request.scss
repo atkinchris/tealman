@@ -1,0 +1,72 @@
+.request {
+  border: $borderWidth solid $colorBorder;
+  border-radius: $borderRadius;
+  margin-bottom: $spacingXs;
+
+  details {
+    summary {
+      font-size: larger;
+      padding: $spacingXs;
+
+      &:hover {
+        background-color: $color2;
+        cursor: pointer;
+      }
+
+      .request-header {
+        align-items: center;
+        display: inline-flex;
+        justify-content: space-around;
+        width: 90%; /* 🐒 patch */
+
+        .request-origin img {
+          margin-right: $spacingXxs;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+
+  details[open] {
+    summary {
+      background-color: $color2;
+      font-weight: $fontWeightBold;
+    }
+
+    details.data-table {
+      border: $borderWidth solid $colorBorder;
+      border-radius: $borderRadius;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: $spacingXs;
+      width: 96%; /* 🐒 patch */
+
+      summary {
+        background-color: $colorTableCaption;
+        color: $colorFont;
+        font-weight: $fontWeight;
+
+        &:hover {
+          color: $colorBackgroundLight;
+        }
+      }
+
+      &:last-child {
+        margin-bottom: $spacingXs;
+      }
+    }
+
+    details.data-table[open] {
+      summary {
+        color: $colorBackgroundLight;
+        font-weight: $fontWeightBold;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: $breakpointMd) {
+  .request-timestamp {
+    display: none;
+  }
+}

@@ -1,189 +1,128 @@
-const scope = {
-  domBtnClear: document.querySelector('.nav-ctrl-clear .iconbtn'),
-  domBtnSettings: document.querySelector('.nav-ctrl-settings .iconbtn'),
-  domBtnSettingsClose: document.querySelector('.settings-close .iconbtn'),
-  domCheckboxFilterGoogleAnalytics: document.querySelector('.filter-google-analytics'),
-  domCheckboxFilterTealiumIq: document.querySelector('.filter-tealium-iq'),
-  domCheckboxPreserveLog: document.querySelector('.nav-ctrl-preserve-log .iconbtn'),
-  domInputSearchResultsCount: document.querySelector('#search-results-count'),
-  domInputSearchTerm: document.querySelector('#search-term'),
-  domListening: document.querySelector('.listening'),
+const tealman = {
+  domNavCheckboxPreserveLog: document.querySelector('#navbtn-preserve'),
+  domNavBtnClear: document.querySelector('#navbtn-clear'),
+  domNavBtnSettings: document.querySelector('#navbtn-settings'),
   domRequestList: document.querySelector('.request-list'),
-  domSettingsLightbox: document.querySelector('.settings-lightbox'),
   domShadow: document.querySelector('.shadow'),
-  keywordHighlighter: new Mark('.request-list'), /* @todo: Review context. */
-  keywordHighlighterTarget: [],
-  navHeight: document.querySelector('nav').getBoundingClientRect().height,
+  domSettingsLightbox: document.querySelector('.settings-lightbox'),
   preserveLog: true,
   requestList: []
 }
 
-scope.requestFilterList = [
-  new RequestFilter(GoogleAnalytics.getOrigin(), GoogleAnalytics.getUrlPattern(), GoogleAnalytics.parseData, true),
-  new RequestFilter(TealiumIQ.getOrigin(), TealiumIQ.getUrlPattern(), TealiumIQ.parseData, true)
+tealman.requestFilterList = [
+  new RequestFilter(TealiumIQ.getOrigin(), TealiumIQ.getUrlPattern()
+    , TealiumIQ.parseData)
 ]
+
+/******** Begin: Helpers ********/
+
+/**
+ * @param {string} url
+ */
+tealman.addPageBreak = url => {
+  const pageBreak = document.createElement('div')
+  pageBreak.setAttribute('class', 'page-break')
+  pageBreak.setAttribute('title', url)
+  pageBreak.innerHTML = `Navigated to ${url}`
+  tealman.domRequestList.appendChild(pageBreak)
+}
+
+/**
+ * Clears all request data from both the memory and the DOM.
+ */
+tealman.clearRequestList = () => {
+  tealman.requestList = []
+  tealman.domRequestList.innerHTML = ''
+}
+
+/**
+ * @param {string} origin
+ * @param {object} data
+ * @returns {AdobeAnalytics|GoogleAnalytics|TealiumIQ}
+ */
+tealman.createRequest = (origin, data) => {
+  let request = null
+  const id = tealman.requestList.length + 1
+  switch (origin) {
+    case TealiumIQ.getOrigin():
+      request = new TealiumIQ(id, data)
+      break;
+    default:
+      break;
+  }
+  return request
+}
+
+/**
+ * @todo: Add description
+ */
+tealman.togglePreserveLog = () => {
+  tealman.preserveLog = !tealman.preserveLog
+  tealman.domNavCheckboxPreserveLog.querySelectorAll('i')
+    .forEach(icon => icon.classList.toggle('hidden'))
+}
 
 /**
  * @param {object} req
- * 
- * Observes network activity to capture Google Analytics and Tealium iQ requests.
  */
-scope.watchNetwork = req => {
+tealman.watchNetwork = req => {
   if (req && req.request) {
-    scope.requestFilterList.forEach(filter => {
-      if (filter.isActive() && filter.urlPattern.test(req.request.url)) {
+    tealman.requestFilterList.forEach(filter => {
+      if (filter.isActive() && filter.getUrlPattern().test(req.request.url)) {
         const data = filter.parseData(req)
         if (data) {
-          const newRequest = new Request(scope.requestList.length + 1, filter.origin, data)
-          scope.requestList.push(newRequest)
-          scope.domRequestList.appendChild(newRequest.createDomElement())
-          scope.domListening.classList.add('hidden')
+          const newRequest = tealman.createRequest(filter.getOrigin(), data)
+          tealman.requestList.push(newRequest)
+          tealman.domRequestList.appendChild(newRequest.createDomElement())
         }
       }
     })
   }
 }
 
-chrome.devtools.network.onRequestFinished.addListener(scope.watchNetwork)
+/******** End: Helpers ********************************************************/
+
+/******** Begin: Event Listeners ********/
 
 /**
- * Clears all requests.
+ * @todo: Add description.
  */
-scope.clearRequestList = () => {
-  scope.requestList = []
-  scope.domRequestList.innerHTML = ''
-  scope.domInputSearchResultsCount.value = ''
-  scope.domListening.classList.remove('hidden')
-}
+tealman.domNavCheckboxPreserveLog.addEventListener('click', event => {
+  event.preventDefault()
+  tealman.togglePreserveLog()
+})
 
 /**
- * @param {string} url
+ * Clears all request data from both the memory and the DOM.
  */
-scope.addPageBreak = (url) => {
-  const pageBreak = document.createElement('div')
-  pageBreak.setAttribute('class', 'page-break')
-  pageBreak.setAttribute('title', url)
-  pageBreak.innerHTML = `Navigated to ${url}`
-  scope.domRequestList.appendChild(pageBreak)
-}
+tealman.domNavBtnClear.addEventListener('click', event => {
+  event.preventDefault()
+  alert('@todo: Clear selected requests only.')
+  tealman.clearRequestList()
+})
 
+/**
+ * @todo: Add description.
+ */
+tealman.domNavBtnSettings.addEventListener('click', event => {
+  event.preventDefault()
+  alert('@todo: Handle settings button click.')
+})
+
+/**
+ * @todo: Add description.
+ */
+chrome.devtools.network.onRequestFinished.addListener(tealman.watchNetwork)
+
+/**
+ * @todo: Add description.
+ */
 chrome.devtools.network.onNavigated.addListener(url => {
-  if (!scope.preserveLog) {
-    scope.clearRequestList()
+  if (tealman.preserveLog) {
+    tealman.addPageBreak(url)
   } else {
-    scope.addPageBreak(url)
+    tealman.clearRequestList()
   }
 })
 
-/* -------- Begin: Event Listeners ---------------------------------------------------------------------------------- */
-
-/**
- * Highlights all request payload strings that match the searched term.
- */
-scope.highlightSearchTermMatches = () => {
-  const searchTerm = scope.domInputSearchTerm.value
-  scope.keywordHighlighter.unmark({
-    done: function () {
-      scope.domInputSearchResultsCount.value = ''
-      scope.keywordHighlighter.mark(searchTerm, {
-        separateWordSearch: false,
-        done: function () {
-          scope.keywordHighlighterTarget = [...document.querySelectorAll('mark')]
-          scope.domInputSearchResultsCount.value = scope.keywordHighlighterTarget.length
-        }
-      })
-    }
-  })
-}
-
-/**
- * Handles highlighting of all request payload strings that match the searched term.
- */
-scope.domInputSearchTerm.addEventListener('keyup', scope.highlightSearchTermMatches)
-
-/**
- * Handles preserving/not-preserving of logs.
- */
-scope.domCheckboxPreserveLog.addEventListener('click', event => {
-  event.preventDefault()
-  scope.preserveLog = !scope.preserveLog
-  scope.domCheckboxPreserveLog.querySelectorAll('i').forEach(icon => icon.classList.toggle('hidden'))
-})
-
-/**
- * Handles clearing of all requests.
- */
-scope.domBtnClear.addEventListener('click', event => {
-  event.preventDefault()
-  scope.clearRequestList()
-})
-
-/**
- * Handles opening of the settings lightbox.
- */
-scope.domBtnSettings.addEventListener('click', event => {
-  event.preventDefault()
-  scope.domShadow.classList.add('open')
-  scope.domSettingsLightbox.classList.add('open')
-})
-
-/**
- * Closes the settings lightbox.
- */
-scope.closeSettingsLightbox = () => {
-  scope.domShadow.classList.remove('open')
-  scope.domSettingsLightbox.classList.remove('open')
-}
-
-/**
- * Handles closing of the settings lightbox (settings lightbox close button click).
- */
-scope.domBtnSettingsClose.addEventListener('click', event => {
-  event.preventDefault()
-  scope.closeSettingsLightbox()
-})
-
-/**
- * Handles closing of the settings lightbox (shadow click).
- */
-scope.domShadow.addEventListener('click', event => {
-  event.preventDefault()
-  scope.closeSettingsLightbox()
-})
-
-/**
- * Handles filtering/not-filtering of Google Analytics requests.
- * @todo: Look for a common logic for filtering/not-filtering requests from different origins.
- */
-scope.domCheckboxFilterGoogleAnalytics.addEventListener('click', event => {
-  event.preventDefault()
-  scope.requestFilterList
-    .find(filter => filter.origin === GoogleAnalytics.getOrigin())
-    .toggleActive()
-  scope.domCheckboxFilterGoogleAnalytics.querySelectorAll('i')
-    .forEach(icon => icon.classList.toggle('hidden'))
-})
-
-/**
- * Handles filtering/not-filtering of Tealium iQ requests.
- * @todo: Look for a common logic for filtering/not-filtering requests from different origins.
- */
-scope.domCheckboxFilterTealiumIq.addEventListener('click', event => {
-  event.preventDefault()
-  scope.requestFilterList
-    .find(filter => filter.origin === TealiumIQ.getOrigin())
-    .toggleActive()
-  scope.domCheckboxFilterTealiumIq.querySelectorAll('i')
-    .forEach(icon => icon.classList.toggle('hidden'))
-})
-
-/**
- * Handles closing of the settings lightbox (escape key press).
- */
-document.body.addEventListener('keyup', event => {
-  if (event.keyCode === 27 && scope.domSettingsLightbox.classList.contains('open')) {
-    scope.closeSettingsLightbox()
-  }
-})
-
-/* -------- End: Event Listeners ------------------------------------------------------------------------------------ */
+/******** End: Event Listeners ************************************************/

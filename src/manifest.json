@@ -1,11 +1,11 @@
 {
-  "description": "Extends Chrome DevTools to capture data sent to Google Analytics and Tealium iQ.",
+  "description": "Extends Chrome DevTools to capture data sent to Adobe Analytics, Google Analytics and Tealium iQ.",
   "devtools_page": "devtools/devtools.html",
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
       "js": ["content-scripts/utagviewandlinkwithlogging.js"],
-      "run_at": "document_start"
+      "run_at": "document_end"
     }
   ],
   "icons": {

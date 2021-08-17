@@ -1,0 +1,28 @@
+.iconbtn {
+  color: $colorIconBtn;
+  text-decoration: none;
+
+  &:hover {
+    color: $colorIconBtnHover;
+  }
+
+  &.iconbtn-dark {
+    color: $colorIconBtnDark;
+
+    &:hover {
+      color: $colorIconBtnDarkHover;
+    }
+  }
+
+  &.iconbtn-light {
+    color: $colorIconBtnLight;
+
+    &:hover {
+      color: $colorIconBtnLightHover;
+    }
+  }
+
+  .hidden {
+    display: none;
+  }
+}
